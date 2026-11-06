@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="看得见的东方 EastSeen：不解释文化，只翻译审美。AI 东方审美转译与文创出海项目。" />
+  <title>看得见的东方 EastSeen｜字外 ZiWai</title>
+  <style>
+    :root{
+      --red:#A93226;
+      --ink:#211F1C;
+      --paper:#F6F1E6;
+      --card:#FFFBF3;
+      --line:rgba(33,31,28,.14);
+      --muted:#6E675E;
+      --shadow:0 18px 50px rgba(33,31,28,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(169,50,38,.10), transparent 28%),
+        radial-gradient(circle at 88% 0%, rgba(33,31,28,.06), transparent 26%),
+        var(--paper);
+      line-height:1.7;
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(1120px, calc(100% - 36px));margin:0 auto}
+    header{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter:blur(16px);
+      background:rgba(246,241,230,.84);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      min-height:66px;display:flex;align-items:center;gap:18px;
+      justify-content:space-between;
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+    .logo-mini{width:42px;height:28px;flex:0 0 auto}
+    .nav-links{
+      display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
+      padding:8px 0;
+    }
+    .nav-links::-webkit-scrollbar{display:none}
+    .nav-links a{
+      padding:8px 10px;border-radius:999px;color:var(--muted);
+      font-size:14px;white-space:nowrap;
+    }
+    .nav-links a:hover{background:rgba(169,50,38,.08);color:var(--red)}
+    .hero{padding:64px 0 34px;display:grid;grid-template-columns:1.12fr .88fr;gap:38px;align-items:center}
+    .kicker{
+      display:inline-flex;align-items:center;gap:8px;
+      font-size:13px;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--red);font-weight:800;
+    }
+    .kicker::before{content:"";width:28px;height:2px;background:var(--red);display:inline-block}
+    h1{font-size:clamp(40px,7vw,76px);line-height:1.05;margin:16px 0 18px;letter-spacing:-.04em}
+    .subtitle{font-size:clamp(17px,2.2vw,22px);color:var(--muted);max-width:620px}
+    .tagline{
+      margin:22px 0;padding-left:16px;border-left:4px solid var(--red);
+      font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:.02em;
+    }
+    .tagline-en{color:var(--muted);font-size:14px;letter-spacing:.18em;text-transform:uppercase}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--line);
+      background:var(--card);color:var(--ink);font-weight:700;cursor:pointer;
+      transition:.2s transform,.2s box-shadow,.2s background;
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(33,31,28,.10)}
+    .btn.primary{background:var(--red);color:#fff;border-color:var(--red)}
+    .hero-art{
+      position:relative;min-height:420px;border-radius:34px;overflow:hidden;
+      background:linear-gradient(145deg,#fffaf0,#eee4d2);
+      border:1px solid var(--line);box-shadow:var(--shadow);
+      display:grid;place-items:center;padding:34px;
+    }
+    .hero-art::after{
+      content:"";position:absolute;inset:18px;border:1px solid rgba(169,50,38,.18);
+      border-radius:24px;pointer-events:none;
+    }
+    .logo-big{width:min(100%,500px);height:auto;display:block;position:relative;z-index:1}
+    .art-caption{
+      position:absolute;bottom:22px;left:0;right:0;text-align:center;
+      z-index:2;font-size:12px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;
+    }
+    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:26px 0 0}
+    .stat{
+      background:rgba(255,251,243,.72);border:1px solid var(--line);
+      border-radius:18px;padding:16px;min-height:112px;
+    }
+    .stat b{display:block;font-size:24px;line-height:1.1;color:var(--red)}
+    .stat span{font-size:13px;color:var(--muted)}
+    section{padding:58px 0;border-top:1px solid var(--line)}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}
+    .section-head h2{font-size:clamp(28px,4vw,44px);line-height:1.1;margin:0;letter-spacing:-.03em}
+    .section-head p{max-width:520px;margin:0;color:var(--muted)}
+    .grid{display:grid;gap:14px}
+    .g2{grid-template-columns:repeat(2,1fr)}
+    .g3{grid-template-columns:repeat(3,1fr)}
+    .g4{grid-template-columns:repeat(4,1fr)}
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      padding:22px;box-shadow:0 6px 18px rgba(33,31,28,.04);
+    }
+    .card h3{margin:0 0 10px;font-size:18px}
+    .card p{margin:0;color:var(--muted);font-size:15px}
+    .num{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;
+      font-weight:800;font-size:14px;margin-bottom:12px;
+    }
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .pill{
+      display:inline-flex;padding:6px 10px;border-radius:999px;
+      background:rgba(169,50,38,.08);color:var(--red);
+      font-size:12px;font-weight:700;border:1px solid rgba(169,50,38,.16);
+    }
+    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+    table{width:100%;border-collapse:collapse;min-width:720px;font-size:14px}
+    th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+    th{background:rgba(33,31,28,.04);font-size:13px;color:var(--muted);font-weight:800}
+    tr:last-child td{border-bottom:0}
+    .quote{
+      font-size:clamp(24px,4vw,46px);line-height:1.15;font-weight:900;
+      letter-spacing:-.02em;margin:0;color:var(--ink);
+    }
+    .quote em{color:var(--red);font-style:normal}
+    .logo-spec{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:center}
+    .logo-panel{
+      background:var(--card);border:1px solid var(--line);border-radius:28px;
+      padding:34px;display:grid;place-items:center;min-height:320px;
+    }
+    .logo-panel svg{width:min(100%,420px);height:auto}
+    .logo-words{text-align:center;margin-top:10px}
+    .logo-words strong{display:block;font-size:22px;letter-spacing:.18em}
+    .logo-words span{display:block;font-size:11px;letter-spacing:.28em;color:var(--muted)}
+    ul.clean{margin:0;padding-left:1.15em;color:var(--muted)}
+    ul.clean li{margin:6px 0}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .red-line td:first-child{color:var(--red);font-weight:800}
+    .qr-card{display:grid;grid-template-columns:1fr 280px;gap:26px;align-items:center}
+    .qr-box{
+      width:240px;height:240px;border-radius:20px;background:#fff;
+      border:1px dashed var(--line);display:grid;place-items:center;overflow:hidden;
+    }
+    .qr-box img{width:100%;height:100%;object-fit:contain}
+    .qr-placeholder{color:var(--muted);font-size:13px;text-align:center;padding:16px}
+    .url-box{
+      margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(33,31,28,.05);
+      font-size:12px;word-break:break-all;color:var(--muted);
+    }
+    footer{padding:34px 0 52px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+    .footer-grid{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    .reveal{opacity:0;transform:translateY(18px);transition:.6s ease}
+    .reveal.show{opacity:1;transform:none}
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;padding-top:38px}
+      .hero-art{min-height:330px}
+      .stats{grid-template-columns:repeat(3,1fr)}
+      .g4{grid-template-columns:repeat(2,1fr)}
+      .logo-spec,.qr-card{grid-template-columns:1fr}
+    }
+    @media (max-width:680px){
+      .wrap{width:min(100% - 24px,1120px)}
+      .nav{align-items:flex-start;flex-direction:column;gap:2px;padding:8px 0}
+      .nav-links{width:100%}
+      .stats,.g2,.g3,.g4,.two-col{grid-template-columns:1fr}
+      .stat{min-height:auto}
+      section{padding:42px 0}
+      .section-head{display:block}
+      .section-head p{margin-top:8px}
+      .qr-box{width:220px;height:220px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="回到顶部">
+        <svg class="logo-mini" viewBox="0 0 240 140" aria-hidden="true">
+          <path d="M20 78 Q120 4 220 78" fill="none" stroke="#211F1C" stroke-width="16" stroke-linecap="round"/>
+          <line x1="8" y1="108" x2="232" y2="108" stroke="#211F1C" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="120" cy="88" r="30" fill="#A93226"/>
+        </svg>
+        <span>看得见的东方 <small style="color:var(--muted);font-weight:600">EAST SEEN</small></span>
+      </a>
+      <nav class="nav-links" aria-label="页面导航">
+        <a href="#overview">概览</a>
+        <a href="#team">团队</a>
+        <a href="#brand">品牌</a>
+        <a href="#system">制度</a>
+        <a href="#logo">图腾</a>
+        <a href="#product">产品</a>
+        <a href="#plan">计划</a>
+        <a href="#qr">二维码</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="wrap hero">
+      <div>
+        <div class="kicker">Cultural Translation × AIGC</div>
+        <h1>看得见的东方<br><span style="color:var(--red)">EastSeen</span></h1>
+        <p class="subtitle">用 AI 把书法、非遗、诗词转译成海外用户看得懂、愿意付钱买的数字产品、实物文创与定制服务。</p>
+        <div class="tagline">不解释文化，只翻译审美。</div>
+        <div class="tagline-en">The East, made visible.</div>
+        <div class="actions">
+          <a class="btn primary" href="#product">查看项目方案</a>
+          <a class="btn" href="#qr">生成二维码</a>
+        </div>
+        <div class="pill-row">
+          <span class="pill">团队：字外 ZiWai</span>
+          <span class="pill">项目：看得见的东方 EastSeen</span>
+          <span class="pill">课程方案 6 人 / 轻量执行 7 人协作</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="品牌图腾：眼睛、红日与地平线">
+        <svg class="logo-big" viewBox="0 0 240 140" role="img" aria-label="看得见的东方 Logo">
+          <path d="M20 78 Q120 4 220 78" fill="none" stroke="#211F1C" stroke-width="15" stroke-linecap="round"/>
+          <line x1="8" y1="108" x2="232" y2="108" stroke="#211F1C" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="120" cy="88" r="30" fill="#A93226"/>
+        </svg>
+        <div class="art-caption">眼睛 = 看得见 · 红日 = 东方 · 地平线 = 边界</div>
+      </div>
+    </div>
+
+    <div class="wrap stats reveal">
+      <div class="stat"><b>6 人</b><span>跨学科团队<br>内容 / 技术 / 设计 / 运营 / 财务</span></div>
+      <div class="stat"><b>5/6</b><span>队长公开竞聘<br>马好涵当选</span></div>
+      <div class="stat"><b>25.2 万</b><span>首年课程测算 GMV</span></div>
+      <div class="stat"><b>16.7 万</b><span>综合毛利测算</span></div>
+      <div class="stat"><b>3 条</b><span>产品线<br>数字 / 实物 / 定制</span></div>
+      <div class="stat"><b>4 步</b><span>AIGC → 数字先测 → 实物 → 定制</span></div>
+    </div>
+
+    <section id="overview">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>一句话定位</h2>
+          <p>把看不懂的东方，做成看得见的商品。我们不卖“中国风符号”，我们卖“审美转译”。</p>
+        </div>
+        <div class="grid g3">
+          <article class="card reveal">
+            <div class="num">01</div>
+            <h3>问题：看得见，但看不懂</h3>
+            <p>书法只剩线条，纹样只剩花纹，诗词直译像说明书。海外用户不缺内容，缺的是把内容转成“可感知的美”的翻译。</p>
+          </article>
+          <article class="card reveal">
+            <div class="num">02</div>
+            <h3>方法：三步转译</h3>
+            <p>意象提取 → 审美转译 → 场景再造。比如“留白”不译成 blank，而译成 breathing space：会呼吸的空间。</p>
+          </article>
+          <article class="card reveal">
+            <div class="num">03</div>
+            <h3>边界：三条底线</h3>
+            <p>不歪曲文化含义、不冒用非遗传承人身份、不做廉价符号拼贴。只用公版或授权素材，AIGC 保留生成记录。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="team">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>团队：先承认不行，再补上行动</h2>
+          <p>队长公开竞聘、一人一岗、一岗一交付。优势写成证据，短板写成对策。</p>
+        </div>
+        <div class="grid g2">
+          <article class="card reveal">
+            <h3>队长与机制</h3>
+            <p>马好涵以 5/6 票公开竞聘当选。三分钟演讲回答：我是谁、带大家去哪、凭什么。队长有日常决策权，也为结果负责；连续延期或 4 人联名可发起信任投票。</p>
+            <div class="pill-row">
+              <span class="pill">任务进看板</span><span class="pill">问题当天说</span>
+              <span class="pill">文档留痕</span><span class="pill">周一站会 / 周五复盘</span>
+            </div>
+          </article>
+          <article class="card reveal">
+            <h3>分工原则</h3>
+            <p>队长对进度负责，内容对选题负责，技术对产能负责，设计对颜值负责，运营对流量与转化负责，财务对钱负责。任何一项出问题，都能立刻找到人。</p>
+          </article>
+        </div>
+
+        <div class="table-wrap reveal" style="margin-top:14px">
+          <table>
+            <thead><tr><th>岗位</th><th>主要职责</th><th>交付物</th></tr></thead>
+            <tbody>
+              <tr><td>队长 / CEO 马好涵</td><td>统筹节奏、对外谈判、路演答辩、危机处理</td><td>进度表、对外协议、答辩材料</td></tr>
+              <tr><td>内容总监</td><td>诗词、书法、非遗选题与考据；中英文案与翻译审校</td><td>选题库、翻译卡、内容脚本</td></tr>
+              <tr><td>技术负责人</td><td>AIGC 工具链、风格库训练、批量出图脚本、数据合规</td><td>风格库、提示词手册、生成记录</td></tr>
+              <tr><td>设计</td><td>Logo、海报、包装、产品视觉与印刷规范</td><td>品牌手册、产品图、包装稿</td></tr>
+              <tr><td>运营</td><td>平台内容、投放、用户反馈、转化复盘</td><td>内容日历、数据报告、A/B 结论</td></tr>
+              <tr><td>财务</td><td>成本、定价、毛利、库存与现金流</td><td>价格表、财务测算、对账表</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid g2" style="margin-top:14px">
+          <article class="card reveal">
+            <h3>4 项优势</h3>
+            <ul class="clean">
+              <li>学科交叉：内容、视觉、技术、交易一个最小闭环不外包。</li>
+              <li>学习与考据：两周完成工具测评，建立提示词手册与考据流程。</li>
+              <li>AI + 跨境经验：会批量出图、多语言处理，也知道平台规则与退货成本。</li>
+              <li>运营与谈判：能算成本、谈供应商、处理差评与对外沟通。</li>
+            </ul>
+          </article>
+          <article class="card reveal">
+            <h3>5 项短板与对策</h3>
+            <ul class="clean">
+              <li>海外审美缺一手判断 → 每周分析海外评论，设“审美陪审团”。</li>
+              <li>资金少、库存压力大 → 先数字后实物，实物预售，首单 20 件/款。</li>
+              <li>品牌冷启动 → 内容先行，一个选题做三种语言。</li>
+              <li>版权与合规 → 只用公版/授权素材，AIGC 留痕，标注来源。</li>
+              <li>人少角色重叠 → 一专多能 + 外部顾问，关键岗位 AB 角。</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="brand">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>名称与口号</h2>
+          <p>“看得见的东方”同时回答“做什么”（东方）和“凭什么”（看得见）。团队厂牌名：字外 ZiWai，英文副标 Beyond the Word。</p>
+        </div>
+        <div class="grid g2">
+          <article class="card reveal">
+            <h3>三层含义</h3>
+            <p><strong>看得见：</strong>解决“看不懂”。把不可见的审美变得可见。<br>
+            <strong>东方：</strong>不做龙、红灯笼、熊猫的符号堆砌，用留白、笔锋、气韵、材质。<br>
+            <strong>EAST SEEN：</strong>see 是看见，seen 是被看见；也像 East Scene（东方场景）。</p>
+          </article>
+          <article class="card reveal">
+            <h3>名称规范</h3>
+            <div class="table-wrap" style="border:0;background:transparent">
+              <table style="min-width:0">
+                <tbody>
+                  <tr><td>中文全称</td><td>看得见的东方</td></tr>
+                  <tr><td>英文全称</td><td>EAST SEEN</td></tr>
+                  <tr><td>团队厂牌</td><td>字外 ZiWai / Beyond the Word</td></tr>
+                  <tr><td>域名建议</td><td>eastseen.studio / eastseen.art</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <div class="card reveal" style="margin-top:14px">
+          <p class="quote">不解释文化，<em>只翻译审美</em>。</p>
+          <p style="margin:12px 0 0;color:var(--muted)">场景副口号：对用户——看得懂，才买得走；对团队——先让人觉得美，再让人记住东方；海外传播——The East, made visible.</p>
+        </div>
+
+        <div class="grid g3" style="margin-top:14px">
+          <article class="card reveal"><h3>使命</h3><p>把东方审美翻译成世界通用的视觉语言。</p></article>
+          <article class="card reveal"><h3>三年愿景</h3><p>成为海外年轻人最容易接触到的东方审美品牌之一：SKU 超过 100 个，复购率 25%，进入 3 个海外平台同类前列。</p></article>
+          <article class="card reveal"><h3>五年愿景</h3><p>从卖产品走向建基础设施：东方审美素材库 + 全球设计师网络，让小团队也能调用“转译能力”。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="system">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>制度：公平比口号有用</h2>
+          <p>规则写在前面。贡献点每周结算；三条红线一次即退出；产品用绿黄红三级管控。</p>
+        </div>
+        <div class="table-wrap reveal red-line">
+          <table>
+            <thead><tr><th>红线</th><th>具体表现</th><th>处理</th></tr></thead>
+            <tbody>
+              <tr><td>抄袭与侵权</td><td>盗用作品/字体/纹样；AI 生成图冒充手绘；未经授权使用非遗 IP</td><td>停止使用并公开致歉；当事人退出项目组</td></tr>
+              <tr><td>数据造假</td><td>刷单、虚报销量、伪造用户反馈、篡改财务报表</td><td>撤回数据；成绩作废；当事人退出</td></tr>
+              <tr><td>私单与吃回扣</td><td>绕过团队接单；供应商返点不入账；带走客户资源</td><td>追回款项；退出；不参与后续收益分配</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid g3" style="margin-top:14px">
+          <article class="card reveal"><h3>贡献点</h3><p>交付质量 40% + 交付及时 25% + 协作补位 20% + 对外价值 15%。每周结算，决定评优、奖金与后续分红比例。</p></article>
+          <article class="card reveal"><h3>三级奖惩</h3><p>一级提醒：提前说明并补齐，不扣分；二级警告：无故延期/返工，书面警告 + 扣 2 点；三级退出：连续两周不交付、触红线、造成对外损失。</p></article>
+          <article class="card reveal"><h3>绿黄红管控</h3><p><strong>绿牌：</strong>有点击有订单，继续深耕；<strong>黄牌：</strong>有曝光无下单，改主图标题；<strong>红牌：</strong>连续两周零曝光，下架淘汰。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="logo">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>图腾：一只眼睛，一轮红日</h2>
+          <p>上眼睑是毛笔弧线，下眼睑同时是地平线，朱砂红日做瞳孔。它既是“看”，也是“日出”。</p>
+        </div>
+        <div class="logo-spec">
+          <div class="logo-panel reveal">
+            <svg viewBox="0 0 240 140" role="img" aria-label="品牌标志">
+              <path d="M20 78 Q120 4 220 78" fill="none" stroke="#211F1C" stroke-width="15" stroke-linecap="round"/>
+              <line x1="8" y1="108" x2="232" y2="108" stroke="#211F1C" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="120" cy="88" r="30" fill="#A93226"/>
+            </svg>
+            <div class="logo-words">
+              <strong>看得见的东方</strong>
+              <span>EAST SEEN</span>
+            </div>
+          </div>
+          <div class="card reveal">
+            <h3>Logo 规范</h3>
+            <ul class="clean">
+              <li>色彩：朱砂红 #A93226 + 墨黑 #211F1C + 宣纸白 #F6F1E6。</li>
+              <li>比例：红日直径约为图形宽度三分之一，与下眼睑相切，不悬空。</li>
+              <li>留白：图形四周留白不小于红日直径；与标准字间距不小于红日直径一半。</li>
+              <li>最小尺寸：印刷不小于 12mm，屏幕不小于 40px；更小时只保留“眼 + 日”。</li>
+              <li>禁忌：不加渐变/投影、不改红日颜色、不改变眼睑与红日比例、不叠加多余元素。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="product">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>项目：先数字，后实物，再定制</h2>
+          <p>数字产品负责验证与引流，实物负责利润，定制负责客单价。四步闭环，每一步都用上一步的数据说话。</p>
+        </div>
+
+        <div class="table-wrap reveal">
+          <table>
+            <thead><tr><th>产品线</th><th>形态 / 示例</th><th>价格带</th><th>毛利</th></tr></thead>
+            <tbody>
+              <tr><td>数字产品</td><td>壁纸包、数字版画、字体与纹样素材包；《空山》壁纸包、《飞白》限量版画</td><td>19—199 元</td><td>86%—90%</td></tr>
+              <tr><td>实物文创</td><td>丝巾、帆布包、香氛卡片、诗笺礼盒、装裱版画；《留白》真丝方巾、《四时》诗笺礼盒</td><td>129—599 元</td><td>55%—65%</td></tr>
+              <tr><td>定制服务</td><td>企业礼赠、婚礼与空间软装、联名设计；酒店大堂软装、企业年会礼盒</td><td>2,000 元起</td><td>45%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid g4" style="margin-top:14px">
+          <article class="card reveal"><div class="num">1</div><h3>AIGC 生成</h3><p>一个主题出 30 组方案，48 小时完成。看合格率与人工修图时长；合格率低于 30% 换模型或主题。</p></article>
+          <article class="card reveal"><div class="num">2</div><h3>数字先测</h3><p>壁纸包、数字版画先上架，最低成本验证付费意愿。两周转化率低于 1% 停掉该主题。</p></article>
+          <article class="card reveal"><div class="num">3</div><h3>做成实物</h3><p>只把数据最好的 3 个方案做成实物，首单 20 件/款，预售制。预售不足 60% 不排产。</p></article>
+          <article class="card reveal"><div class="num">4</div><h3>定制服务</h3><p>把最有付费意愿的 5% 客户转成 B 端与个人定制。连续两月无成交暂停投入。</p></article>
+        </div>
+
+        <div class="grid g2" style="margin-top:14px">
+          <article class="card reveal">
+            <h3>首年课程测算</h3>
+            <p>启动投入约 5 万元；首年 GMV 约 25.2 万元；综合毛利率约 66.5%，毛利 16.7 万元；运营费用约 14.5 万元；净利约 2.2 万元，净利率约 9%。</p>
+            <p style="margin-top:8px">盈亏平衡：月固定费用约 1.21 万元，月 GMV 约 1.82 万元可打平。轻量 MVP 启动成本控制在 2000 元以内。</p>
+          </article>
+          <article class="card reveal">
+            <h3>竞争差异</h3>
+            <p>博物馆文创有 IP 与渠道，我们做“没有 IP 的东方审美”；白牌卖家便宜，我们卖“翻译”与故事；AI 平台出图快，我们做审美筛选、实物落地与场景服务。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="plan">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>12 周执行计划</h2>
+          <p>计划的价值不在写得多漂亮，而在下周真的有人去做。每周固定投入 8 小时，任务颗粒度控制在 2 小时内。</p>
+        </div>
+        <div class="table-wrap reveal">
+          <table>
+            <thead><tr><th>周次</th><th>关键任务</th><th>交付物</th><th>负责人</th></tr></thead>
+            <tbody>
+              <tr><td>第 1 周</td><td>组队、队长竞聘、确定选题与品牌方向</td><td>竞聘记录、方案初稿</td><td>队长</td></tr>
+              <tr><td>第 2 周</td><td>海外用户访谈 10 人，整理痛点清单</td><td>访谈纪要、需求排序</td><td>内容</td></tr>
+              <tr><td>第 3 周</td><td>名称、口号、Logo、海报定稿</td><td>品牌手册 v1</td><td>设计 + 队长</td></tr>
+              <tr><td>第 4 周</td><td>竞品扫描 20 个，确认差异化</td><td>竞品矩阵图</td><td>运营</td></tr>
+              <tr><td>第 5 周</td><td>建立 AIGC 风格库：书法、诗词、非遗纹样各 10 组</td><td>风格库与提示词手册</td><td>技术 + 内容</td></tr>
+              <tr><td>第 6 周</td><td>数字产品 MVP 上线（壁纸包 + 数字版画）</td><td>2 个 SKU、支付与交付流程</td><td>技术 + 运营</td></tr>
+              <tr><td>第 7 周</td><td>数据复盘与 A/B 选品，确定 3 个主推方向</td><td>数据报告、选品结论</td><td>运营</td></tr>
+              <tr><td>第 8 周</td><td>实物打样：丝巾、帆布包、礼盒各 2 版</td><td>样品与成本表</td><td>设计 + 财务</td></tr>
+              <tr><td>第 9 周</td><td>供应链谈判、定价复核、毛利测算</td><td>供应商合同、价格表</td><td>财务</td></tr>
+              <tr><td>第 10 周</td><td>首单预售：社群 + 小红书 + TikTok 内容 10 条</td><td>预售数据、内容素材</td><td>运营</td></tr>
+              <tr><td>第 11 周</td><td>履约与客服 SOP、包装与开箱体验</td><td>SOP 文档、包装样品</td><td>运营 + 设计</td></tr>
+              <tr><td>第 12 周</td><td>答辩与复盘：数据、财务、下一阶段计划</td><td>答辩 PPT、复盘报告</td><td>全员</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pill-row reveal" style="margin-top:14px">
+          <span class="pill">先上架 10 款测试</span><span class="pill">第一个月拿第一笔订单</span>
+          <span class="pill">零库存 / 预售制</span><span class="pill">跑不通及时止损</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="qr">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>二维码：部署后生成，网址不变</h2>
+          <p>页面部署到 GitHub Pages 或 Cloudflare Pages 后，打开本页点击“生成当前页二维码”。以后只更新内容，二维码仍指向同一网址。</p>
+        </div>
+        <div class="card qr-card reveal">
+          <div>
+            <h3>当前页面地址</h3>
+            <div class="url-box" id="currentUrl">加载中...</div>
+            <div class="actions" style="margin-top:14px">
+              <button class="btn primary" id="makeQrBtn" type="button">生成当前页二维码</button>
+              <button class="btn" id="copyUrlBtn" type="button">复制链接</button>
+            </div>
+            <p style="margin:14px 0 0;color:var(--muted);font-size:13px">
+              提示：本地 <code>http://localhost:8000</code> 生成的二维码手机不能直接访问；请部署后用正式网址生成，或部署后把正式网址发我用 Python 生成 PNG 二维码。
+            </p>
+          </div>
+          <div class="qr-box" id="qrBox">
+            <div class="qr-placeholder">点击左侧按钮<br>生成二维码</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>
+        <strong>看得见的东方 EAST SEEN</strong><br>
+        字外 ZiWai · 不解释文化，只翻译审美。
+      </div>
+      <div style="max-width:680px">
+        说明：第七章价格、销量、毛利与费用均为课程作业测算假设，不代表真实经营数据；正式立项前需重新调研。品牌名与图形对外使用前须完成商标近似检索与注册；涉及非遗与书法作品时，仅使用公版或已授权素材。
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const urlEl = document.getElementById('currentUrl');
+    const qrBox = document.getElementById('qrBox');
+    const makeQrBtn = document.getElementById('makeQrBtn');
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
+
+    function currentPageUrl(){
+      return location.href.split('#')[0];
+    }
+
+    function renderUrl(){
+      urlEl.textContent = currentPageUrl();
+    }
+
+    function makeQr(){
+      const url = currentPageUrl();
+      renderUrl();
+      const img = new Image();
+      img.alt = '当前页面二维码';
+      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(url);
+      img.onerror = function(){
+        qrBox.innerHTML = '<div class="qr-placeholder">二维码服务暂不可用<br>请复制链接后用草料二维码生成</div>';
+      };
+      qrBox.innerHTML = '';
+      qrBox.appendChild(img);
+    }
+
+    makeQrBtn.addEventListener('click', makeQr);
+    copyUrlBtn.addEventListener('click', async function(){
+      const url = currentPageUrl();
+      try{
+        await navigator.clipboard.writeText(url);
+        copyUrlBtn.textContent = '已复制';
+        setTimeout(()=>copyUrlBtn.textContent='复制链接', 1600);
+      }catch(e){
+        prompt('复制下面链接：', url);
+      }
+    });
+
+    renderUrl();
+
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: .08});
+    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+  </script>
+</body>
+</html>
