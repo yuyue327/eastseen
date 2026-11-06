@@ -3,585 +3,693 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="看得见的东方 EastSeen：不解释文化，只翻译审美。AI 东方审美转译与文创出海项目。" />
-  <title>看得见的东方 EastSeen｜字外 ZiWai</title>
+  <title>看得见的东方 EastSeen｜AI 视觉智能</title>
   <style>
-    :root{
-      --red:#A93226;
-      --ink:#211F1C;
-      --paper:#F6F1E6;
-      --card:#FFFBF3;
-      --line:rgba(33,31,28,.14);
-      --muted:#6E675E;
-      --shadow:0 18px 50px rgba(33,31,28,.10);
-      --radius:22px;
+    /* ================= 全局变量与基础 ================= */
+    :root {
+      --bg: #050806;
+      --bg-card: rgba(12, 20, 18, 0.6);
+      --text-main: #F0F5F4;
+      --text-muted: #7E9992;
+      --accent: #51A28A;
+      --accent-glow: rgba(81, 162, 138, 0.4);
+      --accent-light: #81D4FA;
+      --border: rgba(81, 162, 138, 0.15);
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", sans-serif;
+      --mono: "SF Mono", "Fira Code", Consolas, monospace;
     }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at 12% 8%, rgba(169,50,38,.10), transparent 28%),
-        radial-gradient(circle at 88% 0%, rgba(33,31,28,.06), transparent 26%),
-        var(--paper);
-      line-height:1.7;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font); color: var(--text-main); background-color: var(--bg);
+      line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+      cursor: none; /* 隐藏默认鼠标，使用自定义光标 */
     }
-    a{color:inherit;text-decoration:none}
-    .wrap{width:min(1120px, calc(100% - 36px));margin:0 auto}
-    header{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:blur(16px);
-      background:rgba(246,241,230,.84);
-      border-bottom:1px solid var(--line);
+
+    /* ================= 自定义鼠标光标与拖尾 ================= */
+    .cursor-dot {
+      width: 8px; height: 8px; background: var(--accent); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
     }
-    .nav{
-      min-height:66px;display:flex;align-items:center;gap:18px;
-      justify-content:space-between;
+    .cursor-ring {
+      width: 40px; height: 40px; border: 1px solid var(--accent); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, background 0.3s; backdrop-filter: blur(2px);
     }
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
-    .logo-mini{width:42px;height:28px;flex:0 0 auto}
-    .nav-links{
-      display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;
-      padding:8px 0;
+    .cursor-ring.hover { width: 60px; height: 60px; background: rgba(81, 162, 138, 0.1); }
+
+    /* ================= 极光背景 ================= */
+    .aurora-bg {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
+      background: radial-gradient(circle at 20% 30%, rgba(81, 162, 138, 0.15), transparent 40%),
+                  radial-gradient(circle at 80% 70%, rgba(129, 212, 250, 0.1), transparent 40%);
+      animation: aurora 15s infinite alternate linear;
     }
-    .nav-links::-webkit-scrollbar{display:none}
-    .nav-links a{
-      padding:8px 10px;border-radius:999px;color:var(--muted);
-      font-size:14px;white-space:nowrap;
+    @keyframes aurora {
+      0% { transform: scale(1) translate(0, 0); }
+      50% { transform: scale(1.1) translate(-20px, 20px); }
+      100% { transform: scale(1) translate(20px, -20px); }
     }
-    .nav-links a:hover{background:rgba(169,50,38,.08);color:var(--red)}
-    .hero{padding:64px 0 34px;display:grid;grid-template-columns:1.12fr .88fr;gap:38px;align-items:center}
-    .kicker{
-      display:inline-flex;align-items:center;gap:8px;
-      font-size:13px;letter-spacing:.12em;text-transform:uppercase;
-      color:var(--red);font-weight:800;
+    .bg-grid {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+      background-image: linear-gradient(rgba(81, 162, 138, 0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(81, 162, 138, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle at center, black 10%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 80%);
     }
-    .kicker::before{content:"";width:28px;height:2px;background:var(--red);display:inline-block}
-    h1{font-size:clamp(40px,7vw,76px);line-height:1.05;margin:16px 0 18px;letter-spacing:-.04em}
-    .subtitle{font-size:clamp(17px,2.2vw,22px);color:var(--muted);max-width:620px}
-    .tagline{
-      margin:22px 0;padding-left:16px;border-left:4px solid var(--red);
-      font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:.02em;
+
+    /* ================= 导航栏 ================= */
+    header {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      background: rgba(5, 8, 6, 0.5); backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border);
     }
-    .tagline-en{color:var(--muted);font-size:14px;letter-spacing:.18em;text-transform:uppercase}
-    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      min-height:46px;padding:0 18px;border-radius:999px;border:1px solid var(--line);
-      background:var(--card);color:var(--ink);font-weight:700;cursor:pointer;
-      transition:.2s transform,.2s box-shadow,.2s background;
+    .nav-container {
+      max-width: 1200px; margin: 0 auto; height: 76px;
+      display: flex; justify-content: space-between; align-items: center; padding: 0 24px;
     }
-    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(33,31,28,.10)}
-    .btn.primary{background:var(--red);color:#fff;border-color:var(--red)}
-    .hero-art{
-      position:relative;min-height:420px;border-radius:34px;overflow:hidden;
-      background:linear-gradient(145deg,#fffaf0,#eee4d2);
-      border:1px solid var(--line);box-shadow:var(--shadow);
-      display:grid;place-items:center;padding:34px;
+    .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .brand img { width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px var(--accent-glow)); }
+    .brand-text { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+    .brand-en { font-size: 10px; color: var(--accent); letter-spacing: 0.1em; display: block; font-weight: 600; }
+
+    .nav-links { display: flex; gap: 6px; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 99px; border: 1px solid var(--border); }
+    .nav-btn {
+      background: transparent; border: none; color: var(--text-muted); font-size: 14px;
+      font-weight: 600; padding: 10px 24px; border-radius: 99px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
     }
-    .hero-art::after{
-      content:"";position:absolute;inset:18px;border:1px solid rgba(169,50,38,.18);
-      border-radius:24px;pointer-events:none;
+    .nav-btn:hover { color: var(--text-main); }
+    .nav-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 20px var(--accent-glow); }
+
+    /* ================= 页面切换动画 ================= */
+    .page { display: none; padding-top: 76px; min-height: 100vh; }
+    .page.active { display: block; }
+    .stagger-item { opacity: 0; transform: translateY(30px); animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* ================= 首页 ================= */
+    .hero { text-align: center; padding: 120px 24px 60px; position: relative; }
+    .hero h1 { font-size: clamp(40px, 7vw, 80px); font-weight: 900; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.04em; }
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 20%, var(--accent) 60%, var(--accent-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .logo-big{width:min(100%,500px);height:auto;display:block;position:relative;z-index:1}
-    .art-caption{
-      position:absolute;bottom:22px;left:0;right:0;text-align:center;
-      z-index:2;font-size:12px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;
+    .hero p { font-size: clamp(18px, 2vw, 22px); color: var(--text-muted); max-width: 640px; margin: 0 auto; }
+    .hero-logo { width: 300px; margin: 50px auto; filter: drop-shadow(0 0 50px var(--accent-glow)); animation: float 6s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.02); } }
+
+    /* 极客终端 */
+    .console-box { max-width: 900px; margin: 0 auto; background: #080D0C; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); overflow: hidden; }
+    .con-header { background: rgba(255,255,255,0.03); padding: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .con-body { padding: 30px; font-family: var(--mono); font-size: 15px; line-height: 1.8; color: #A9B7C6; min-height: 300px; }
+    .con-input { display: flex; gap: 12px; margin-top: 20px; }
+    .con-input span { color: var(--accent); font-weight: bold; }
+    .con-input input { background: transparent; border: none; color: #fff; font-family: var(--mono); font-size: 15px; outline: none; flex: 1; caret-color: var(--accent); }
+    .out-key { color: #E5C07B; } .out-str { color: #98C379; } .out-cmt { color: #5C6370; font-style: italic; }
+
+    /* 数据滚动 */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1000px; margin: 40px auto 0; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); padding: 30px 20px; border-radius: 20px; text-align: center; backdrop-filter: blur(10px); transition: 0.3s; }
+    .stat-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px var(--accent-glow); }
+    .stat-num { font-size: 46px; font-weight: 900; color: #fff; line-height: 1; display: flex; justify-content: center; align-items: baseline; }
+    .stat-num span { font-size: 20px; color: var(--accent); margin-left: 4px; }
+    .stat-label { font-size: 14px; color: var(--text-muted); margin-top: 10px; }
+
+    /* ================= 非遗方舟 (3D卡片) ================= */
+    .sec-title { font-size: clamp(32px, 5vw, 48px); font-weight: 800; text-align: center; margin-bottom: 16px; }
+    .sec-sub { text-align: center; color: var(--text-muted); margin-bottom: 60px; font-size: 18px; }
+
+    .heritage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; perspective: 1000px; }
+    .h-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 40px 30px;
+      transform-style: preserve-3d; transition: border-color 0.3s; position: relative; overflow: hidden;
     }
-    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:26px 0 0}
-    .stat{
-      background:rgba(255,251,243,.72);border:1px solid var(--line);
-      border-radius:18px;padding:16px;min-height:112px;
+    .h-card::before {
+      content: ''; position: absolute; inset: 0; background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(81, 162, 138, 0.15), transparent 40%);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
     }
-    .stat b{display:block;font-size:24px;line-height:1.1;color:var(--red)}
-    .stat span{font-size:13px;color:var(--muted)}
-    section{padding:58px 0;border-top:1px solid var(--line)}
-    .section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}
-    .section-head h2{font-size:clamp(28px,4vw,44px);line-height:1.1;margin:0;letter-spacing:-.03em}
-    .section-head p{max-width:520px;margin:0;color:var(--muted)}
-    .grid{display:grid;gap:14px}
-    .g2{grid-template-columns:repeat(2,1fr)}
-    .g3{grid-template-columns:repeat(3,1fr)}
-    .g4{grid-template-columns:repeat(4,1fr)}
-    .card{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      padding:22px;box-shadow:0 6px 18px rgba(33,31,28,.04);
+    .h-card:hover { border-color: var(--accent); }
+    .h-card:hover::before { opacity: 1; }
+    .h-card-inner { transform: translateZ(50px); }
+    .h-icon { font-size: 50px; margin-bottom: 20px; filter: drop-shadow(0 0 15px var(--accent-glow)); }
+    .h-card h3 { font-size: 24px; margin-bottom: 12px; color: #fff; }
+    .h-card p { color: var(--text-muted); font-size: 15px; margin-bottom: 20px; }
+    .tag { background: rgba(81,162,138,0.1); color: var(--accent); padding: 6px 14px; border-radius: 99px; font-size: 13px; border: 1px solid var(--border); }
+
+    /* ================= 画廊与骨架屏 ================= */
+    .gallery-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; max-width: 1200px; margin: 0 auto 40px; }
+    .btn-primary { background: var(--accent); color: #fff; border: none; padding: 14px 28px; border-radius: 99px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 20px var(--accent-glow); display: flex; gap: 8px; align-items: center; }
+    .btn-primary:hover { transform: scale(1.05); background: #62C2A7; }
+    .btn-primary:active { transform: scale(0.95); }
+
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 1200px; margin: 0 auto; }
+    .p-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px;
+      display: flex; flex-direction: column; gap: 12px; animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px);
     }
-    .card h3{margin:0 0 10px;font-size:18px}
-    .card p{margin:0;color:var(--muted);font-size:15px}
-    .num{
-      display:inline-flex;align-items:center;justify-content:center;
-      width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;
-      font-weight:800;font-size:14px;margin-bottom:12px;
+    @keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .p-img { width: 100%; aspect-ratio: 1; background: rgba(255,255,255,0.02); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 50px; border: 1px solid rgba(255,255,255,0.05); }
+    .p-title { font-size: 18px; font-weight: bold; }
+    .p-price { color: var(--accent); font-weight: bold; font-family: var(--mono); }
+    .p-desc { font-size: 13px; color: var(--text-muted); }
+
+    /* 骨架屏动画 */
+    .skeleton { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; position: relative; overflow: hidden; }
+    .skeleton::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(81, 162, 138, 0.1), transparent);
+      animation: shimmer 1.5s infinite;
     }
-    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-    .pill{
-      display:inline-flex;padding:6px 10px;border-radius:999px;
-      background:rgba(169,50,38,.08);color:var(--red);
-      font-size:12px;font-weight:700;border:1px solid rgba(169,50,38,.16);
+    @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .sk-img { width: 100%; aspect-ratio: 1; background: rgba(255,255,255,0.05); border-radius: 16px; margin-bottom: 16px; }
+    .sk-text { height: 16px; background: rgba(255,255,255,0.05); border-radius: 4px; margin-bottom: 8px; width: 80%; }
+    .sk-text.short { width: 40%; }
+
+    /* ================= 商业闭环 & 贡献点 ================= */
+    .circle-chart { display: flex; justify-content: center; gap: 60px; margin: 40px 0; }
+    .chart-item { text-align: center; position: relative; width: 150px; height: 150px; }
+    .chart-item svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .chart-item circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+    .chart-bg { stroke: rgba(255,255,255,0.05); }
+    .chart-progress { stroke: var(--accent); stroke-dasharray: 440; stroke-dashoffset: 440; animation: fillChart 2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fillChart { to { stroke-dashoffset: var(--target-offset); } }
+    .chart-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: bold; font-family: var(--mono); }
+    .chart-label { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+
+    .calc-box { background: #080D0C; border: 1px solid var(--border); padding: 40px; border-radius: 24px; max-width: 800px; margin: 60px auto 0; }
+    .slider-group { margin-bottom: 30px; }
+    .slider-head { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 12px; font-family: var(--mono); font-size: 14px; }
+    .slider-head span:last-child { color: var(--accent); }
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 15px var(--accent-glow); transition: 0.2s; }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .total-score { text-align: center; margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border); }
+    .score-val { font-size: 72px; font-weight: 900; color: var(--accent); line-height: 1; text-shadow: 0 0 30px var(--accent-glow); }
+
+    /* ================= 其他通用 ================= */
+    section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+    footer { text-align: center; padding: 60px 20px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px; }
+
+    .qr-container { text-align: center; margin: 40px auto; max-width: 300px; background: #fff; padding: 20px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .qr-container img { width: 100%; display: block; border-radius: 12px; }
+
+    @media (max-width: 992px) {
+      .stats-grid, .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .heritage-grid { grid-template-columns: 1fr; }
+      .circle-chart { flex-wrap: wrap; }
+      .nav-container { flex-direction: column; height: auto; padding: 16px; gap: 16px; }
+      .page { padding-top: 140px; }
+      body { cursor: auto; } /* 移动端恢复默认光标 */
+      .cursor-dot, .cursor-ring { display: none; }
     }
-    .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:var(--card)}
-    table{width:100%;border-collapse:collapse;min-width:720px;font-size:14px}
-    th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
-    th{background:rgba(33,31,28,.04);font-size:13px;color:var(--muted);font-weight:800}
-    tr:last-child td{border-bottom:0}
-    .quote{
-      font-size:clamp(24px,4vw,46px);line-height:1.15;font-weight:900;
-      letter-spacing:-.02em;margin:0;color:var(--ink);
-    }
-    .quote em{color:var(--red);font-style:normal}
-    .logo-spec{display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:center}
-    .logo-panel{
-      background:var(--card);border:1px solid var(--line);border-radius:28px;
-      padding:34px;display:grid;place-items:center;min-height:320px;
-    }
-    .logo-panel svg{width:min(100%,420px);height:auto}
-    .logo-words{text-align:center;margin-top:10px}
-    .logo-words strong{display:block;font-size:22px;letter-spacing:.18em}
-    .logo-words span{display:block;font-size:11px;letter-spacing:.28em;color:var(--muted)}
-    ul.clean{margin:0;padding-left:1.15em;color:var(--muted)}
-    ul.clean li{margin:6px 0}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .red-line td:first-child{color:var(--red);font-weight:800}
-    .qr-card{display:grid;grid-template-columns:1fr 280px;gap:26px;align-items:center}
-    .qr-box{
-      width:240px;height:240px;border-radius:20px;background:#fff;
-      border:1px dashed var(--line);display:grid;place-items:center;overflow:hidden;
-    }
-    .qr-box img{width:100%;height:100%;object-fit:contain}
-    .qr-placeholder{color:var(--muted);font-size:13px;text-align:center;padding:16px}
-    .url-box{
-      margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(33,31,28,.05);
-      font-size:12px;word-break:break-all;color:var(--muted);
-    }
-    footer{padding:34px 0 52px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
-    .footer-grid{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-    .reveal{opacity:0;transform:translateY(18px);transition:.6s ease}
-    .reveal.show{opacity:1;transform:none}
-    @media (max-width:980px){
-      .hero{grid-template-columns:1fr;padding-top:38px}
-      .hero-art{min-height:330px}
-      .stats{grid-template-columns:repeat(3,1fr)}
-      .g4{grid-template-columns:repeat(2,1fr)}
-      .logo-spec,.qr-card{grid-template-columns:1fr}
-    }
-    @media (max-width:680px){
-      .wrap{width:min(100% - 24px,1120px)}
-      .nav{align-items:flex-start;flex-direction:column;gap:2px;padding:8px 0}
-      .nav-links{width:100%}
-      .stats,.g2,.g3,.g4,.two-col{grid-template-columns:1fr}
-      .stat{min-height:auto}
-      section{padding:42px 0}
-      .section-head{display:block}
-      .section-head p{margin-top:8px}
-      .qr-box{width:220px;height:220px}
+    @media (max-width: 600px) {
+      .stats-grid, .product-grid { grid-template-columns: 1fr; }
+      .gallery-header { flex-direction: column; align-items: flex-start; gap: 20px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- 特效层 -->
+  <div class="aurora-bg"></div>
+  <div class="bg-grid"></div>
+  <div class="cursor-dot" id="c-dot"></div>
+  <div class="cursor-ring" id="c-ring"></div>
+
+  <!-- 导航栏 -->
   <header>
-    <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="回到顶部">
-        <svg class="logo-mini" viewBox="0 0 240 140" aria-hidden="true">
-          <path d="M20 78 Q120 4 220 78" fill="none" stroke="#211F1C" stroke-width="16" stroke-linecap="round"/>
-          <line x1="8" y1="108" x2="232" y2="108" stroke="#211F1C" stroke-width="6" stroke-linecap="round"/>
-          <circle cx="120" cy="88" r="30" fill="#A93226"/>
-        </svg>
-        <span>看得见的东方 <small style="color:var(--muted);font-weight:600">EAST SEEN</small></span>
-      </a>
-      <nav class="nav-links" aria-label="页面导航">
-        <a href="#overview">概览</a>
-        <a href="#team">团队</a>
-        <a href="#brand">品牌</a>
-        <a href="#system">制度</a>
-        <a href="#logo">图腾</a>
-        <a href="#product">产品</a>
-        <a href="#plan">计划</a>
-        <a href="#qr">二维码</a>
+    <div class="nav-container">
+      <div class="brand" onclick="switchPage('home', event)">
+        <img src="./logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'40\' fill=\'%2351A28A\'/></svg>'">
+        <div>
+          <div class="brand-text">看得见的东方</div>
+          <div class="brand-en">Visible East · AI Visual Intelligence</div>
+        </div>
+      </div>
+      <nav class="nav-links" id="navMenu">
+        <button class="nav-btn active" onclick="switchPage('home', event)">品牌首页</button>
+        <button class="nav-btn" onclick="switchPage('heritage', event)">非遗方舟</button>
+        <button class="nav-btn" onclick="switchPage('gallery', event)">数字画廊</button>
+        <button class="nav-btn" onclick="switchPage('business', event)">商业引擎</button>
+        <button class="nav-btn" onclick="switchPage('connect', event)">联系我们</button>
       </nav>
     </div>
   </header>
 
-  <main id="top">
-    <div class="wrap hero">
-      <div>
-        <div class="kicker">Cultural Translation × AIGC</div>
-        <h1>看得见的东方<br><span style="color:var(--red)">EastSeen</span></h1>
-        <p class="subtitle">用 AI 把书法、非遗、诗词转译成海外用户看得懂、愿意付钱买的数字产品、实物文创与定制服务。</p>
-        <div class="tagline">不解释文化，只翻译审美。</div>
-        <div class="tagline-en">The East, made visible.</div>
-        <div class="actions">
-          <a class="btn primary" href="#product">查看项目方案</a>
-          <a class="btn" href="#qr">生成二维码</a>
-        </div>
-        <div class="pill-row">
-          <span class="pill">团队：字外 ZiWai</span>
-          <span class="pill">项目：看得见的东方 EastSeen</span>
-          <span class="pill">课程方案 6 人 / 轻量执行 7 人协作</span>
-        </div>
-      </div>
-      <div class="hero-art" aria-label="品牌图腾：眼睛、红日与地平线">
-        <svg class="logo-big" viewBox="0 0 240 140" role="img" aria-label="看得见的东方 Logo">
-          <path d="M20 78 Q120 4 220 78" fill="none" stroke="#211F1C" stroke-width="15" stroke-linecap="round"/>
-          <line x1="8" y1="108" x2="232" y2="108" stroke="#211F1C" stroke-width="5" stroke-linecap="round"/>
-          <circle cx="120" cy="88" r="30" fill="#A93226"/>
-        </svg>
-        <div class="art-caption">眼睛 = 看得见 · 红日 = 东方 · 地平线 = 边界</div>
-      </div>
+  <!-- ================= 页面 1：首页 ================= -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <h1 class="stagger-item" style="animation-delay: 0.1s;"><span class="text-gradient">看见东方，<br>AI 视觉智能</span></h1>
+      <p class="stagger-item" style="animation-delay: 0.2s;">不解释文化，只翻译审美。用大模型提取东方意象，重构世界通用的视觉语言。</p>
+      <img src="./logo.png" alt="Logo" class="hero-logo stagger-item" style="animation-delay: 0.3s;" onerror="this.style.display='none'">
     </div>
 
-    <div class="wrap stats reveal">
-      <div class="stat"><b>6 人</b><span>跨学科团队<br>内容 / 技术 / 设计 / 运营 / 财务</span></div>
-      <div class="stat"><b>5/6</b><span>队长公开竞聘<br>马好涵当选</span></div>
-      <div class="stat"><b>25.2 万</b><span>首年课程测算 GMV</span></div>
-      <div class="stat"><b>16.7 万</b><span>综合毛利测算</span></div>
-      <div class="stat"><b>3 条</b><span>产品线<br>数字 / 实物 / 定制</span></div>
-      <div class="stat"><b>4 步</b><span>AIGC → 数字先测 → 实物 → 定制</span></div>
-    </div>
-
-    <section id="overview">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>一句话定位</h2>
-          <p>把看不懂的东方，做成看得见的商品。我们不卖“中国风符号”，我们卖“审美转译”。</p>
+    <section>
+      <div class="stats-grid">
+        <div class="stat-card stagger-item" style="animation-delay: 0.4s;">
+          <div class="stat-num"><span class="count" data-target="25.2">0</span><span>W+</span></div>
+          <div class="stat-label">首年目标 GMV</div>
         </div>
-        <div class="grid g3">
-          <article class="card reveal">
-            <div class="num">01</div>
-            <h3>问题：看得见，但看不懂</h3>
-            <p>书法只剩线条，纹样只剩花纹，诗词直译像说明书。海外用户不缺内容，缺的是把内容转成“可感知的美”的翻译。</p>
-          </article>
-          <article class="card reveal">
-            <div class="num">02</div>
-            <h3>方法：三步转译</h3>
-            <p>意象提取 → 审美转译 → 场景再造。比如“留白”不译成 blank，而译成 breathing space：会呼吸的空间。</p>
-          </article>
-          <article class="card reveal">
-            <div class="num">03</div>
-            <h3>边界：三条底线</h3>
-            <p>不歪曲文化含义、不冒用非遗传承人身份、不做廉价符号拼贴。只用公版或授权素材，AIGC 保留生成记录。</p>
-          </article>
+        <div class="stat-card stagger-item" style="animation-delay: 0.5s;">
+          <div class="stat-num"><span class="count" data-target="66.5">0</span><span>%</span></div>
+          <div class="stat-label">综合毛利率</div>
+        </div>
+        <div class="stat-card stagger-item" style="animation-delay: 0.6s;">
+          <div class="stat-num"><span class="count" data-target="100">0</span><span>+</span></div>
+          <div class="stat-label">三年 SKU 矩阵</div>
+        </div>
+        <div class="stat-card stagger-item" style="animation-delay: 0.7s;">
+          <div class="stat-num"><span class="count" data-target="0">0</span><span>库存</span></div>
+          <div class="stat-label">轻资产启动模式</div>
         </div>
       </div>
     </section>
 
-    <section id="team">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>团队：先承认不行，再补上行动</h2>
-          <p>队长公开竞聘、一人一岗、一岗一交付。优势写成证据，短板写成对策。</p>
+    <section class="stagger-item" style="animation-delay: 0.8s;">
+      <div class="sec-title">AIGC 审美转译终端</div>
+      <div class="sec-sub">输入东方词汇，查看 AI 的转译结果。</div>
+      <div class="console-box">
+        <div class="con-header">
+          <div class="dot" style="background:#FF5F56"></div>
+          <div class="dot" style="background:#FFBD2E"></div>
+          <div class="dot" style="background:#27C93F"></div>
         </div>
-        <div class="grid g2">
-          <article class="card reveal">
-            <h3>队长与机制</h3>
-            <p>马好涵以 5/6 票公开竞聘当选。三分钟演讲回答：我是谁、带大家去哪、凭什么。队长有日常决策权，也为结果负责；连续延期或 4 人联名可发起信任投票。</p>
-            <div class="pill-row">
-              <span class="pill">任务进看板</span><span class="pill">问题当天说</span>
-              <span class="pill">文档留痕</span><span class="pill">周一站会 / 周五复盘</span>
-            </div>
-          </article>
-          <article class="card reveal">
-            <h3>分工原则</h3>
-            <p>队长对进度负责，内容对选题负责，技术对产能负责，设计对颜值负责，运营对流量与转化负责，财务对钱负责。任何一项出问题，都能立刻找到人。</p>
-          </article>
-        </div>
-
-        <div class="table-wrap reveal" style="margin-top:14px">
-          <table>
-            <thead><tr><th>岗位</th><th>主要职责</th><th>交付物</th></tr></thead>
-            <tbody>
-              <tr><td>队长 / CEO 马好涵</td><td>统筹节奏、对外谈判、路演答辩、危机处理</td><td>进度表、对外协议、答辩材料</td></tr>
-              <tr><td>内容总监</td><td>诗词、书法、非遗选题与考据；中英文案与翻译审校</td><td>选题库、翻译卡、内容脚本</td></tr>
-              <tr><td>技术负责人</td><td>AIGC 工具链、风格库训练、批量出图脚本、数据合规</td><td>风格库、提示词手册、生成记录</td></tr>
-              <tr><td>设计</td><td>Logo、海报、包装、产品视觉与印刷规范</td><td>品牌手册、产品图、包装稿</td></tr>
-              <tr><td>运营</td><td>平台内容、投放、用户反馈、转化复盘</td><td>内容日历、数据报告、A/B 结论</td></tr>
-              <tr><td>财务</td><td>成本、定价、毛利、库存与现金流</td><td>价格表、财务测算、对账表</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="grid g2" style="margin-top:14px">
-          <article class="card reveal">
-            <h3>4 项优势</h3>
-            <ul class="clean">
-              <li>学科交叉：内容、视觉、技术、交易一个最小闭环不外包。</li>
-              <li>学习与考据：两周完成工具测评，建立提示词手册与考据流程。</li>
-              <li>AI + 跨境经验：会批量出图、多语言处理，也知道平台规则与退货成本。</li>
-              <li>运营与谈判：能算成本、谈供应商、处理差评与对外沟通。</li>
-            </ul>
-          </article>
-          <article class="card reveal">
-            <h3>5 项短板与对策</h3>
-            <ul class="clean">
-              <li>海外审美缺一手判断 → 每周分析海外评论，设“审美陪审团”。</li>
-              <li>资金少、库存压力大 → 先数字后实物，实物预售，首单 20 件/款。</li>
-              <li>品牌冷启动 → 内容先行，一个选题做三种语言。</li>
-              <li>版权与合规 → 只用公版/授权素材，AIGC 留痕，标注来源。</li>
-              <li>人少角色重叠 → 一专多能 + 外部顾问，关键岗位 AB 角。</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="brand">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>名称与口号</h2>
-          <p>“看得见的东方”同时回答“做什么”（东方）和“凭什么”（看得见）。团队厂牌名：字外 ZiWai，英文副标 Beyond the Word。</p>
-        </div>
-        <div class="grid g2">
-          <article class="card reveal">
-            <h3>三层含义</h3>
-            <p><strong>看得见：</strong>解决“看不懂”。把不可见的审美变得可见。<br>
-            <strong>东方：</strong>不做龙、红灯笼、熊猫的符号堆砌，用留白、笔锋、气韵、材质。<br>
-            <strong>EAST SEEN：</strong>see 是看见，seen 是被看见；也像 East Scene（东方场景）。</p>
-          </article>
-          <article class="card reveal">
-            <h3>名称规范</h3>
-            <div class="table-wrap" style="border:0;background:transparent">
-              <table style="min-width:0">
-                <tbody>
-                  <tr><td>中文全称</td><td>看得见的东方</td></tr>
-                  <tr><td>英文全称</td><td>EAST SEEN</td></tr>
-                  <tr><td>团队厂牌</td><td>字外 ZiWai / Beyond the Word</td></tr>
-                  <tr><td>域名建议</td><td>eastseen.studio / eastseen.art</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </div>
-
-        <div class="card reveal" style="margin-top:14px">
-          <p class="quote">不解释文化，<em>只翻译审美</em>。</p>
-          <p style="margin:12px 0 0;color:var(--muted)">场景副口号：对用户——看得懂，才买得走；对团队——先让人觉得美，再让人记住东方；海外传播——The East, made visible.</p>
-        </div>
-
-        <div class="grid g3" style="margin-top:14px">
-          <article class="card reveal"><h3>使命</h3><p>把东方审美翻译成世界通用的视觉语言。</p></article>
-          <article class="card reveal"><h3>三年愿景</h3><p>成为海外年轻人最容易接触到的东方审美品牌之一：SKU 超过 100 个，复购率 25%，进入 3 个海外平台同类前列。</p></article>
-          <article class="card reveal"><h3>五年愿景</h3><p>从卖产品走向建基础设施：东方审美素材库 + 全球设计师网络，让小团队也能调用“转译能力”。</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="system">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>制度：公平比口号有用</h2>
-          <p>规则写在前面。贡献点每周结算；三条红线一次即退出；产品用绿黄红三级管控。</p>
-        </div>
-        <div class="table-wrap reveal red-line">
-          <table>
-            <thead><tr><th>红线</th><th>具体表现</th><th>处理</th></tr></thead>
-            <tbody>
-              <tr><td>抄袭与侵权</td><td>盗用作品/字体/纹样；AI 生成图冒充手绘；未经授权使用非遗 IP</td><td>停止使用并公开致歉；当事人退出项目组</td></tr>
-              <tr><td>数据造假</td><td>刷单、虚报销量、伪造用户反馈、篡改财务报表</td><td>撤回数据；成绩作废；当事人退出</td></tr>
-              <tr><td>私单与吃回扣</td><td>绕过团队接单；供应商返点不入账；带走客户资源</td><td>追回款项；退出；不参与后续收益分配</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="grid g3" style="margin-top:14px">
-          <article class="card reveal"><h3>贡献点</h3><p>交付质量 40% + 交付及时 25% + 协作补位 20% + 对外价值 15%。每周结算，决定评优、奖金与后续分红比例。</p></article>
-          <article class="card reveal"><h3>三级奖惩</h3><p>一级提醒：提前说明并补齐，不扣分；二级警告：无故延期/返工，书面警告 + 扣 2 点；三级退出：连续两周不交付、触红线、造成对外损失。</p></article>
-          <article class="card reveal"><h3>绿黄红管控</h3><p><strong>绿牌：</strong>有点击有订单，继续深耕；<strong>黄牌：</strong>有曝光无下单，改主图标题；<strong>红牌：</strong>连续两周零曝光，下架淘汰。</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="logo">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>图腾：一只眼睛，一轮红日</h2>
-          <p>上眼睑是毛笔弧线，下眼睑同时是地平线，朱砂红日做瞳孔。它既是“看”，也是“日出”。</p>
-        </div>
-        <div class="logo-spec">
-          <div class="logo-panel reveal">
-            <svg viewBox="0 0 240 140" role="img" aria-label="品牌标志">
-              <path d="M20 78 Q120 4 220 78" fill="none" stroke="#211F1C" stroke-width="15" stroke-linecap="round"/>
-              <line x1="8" y1="108" x2="232" y2="108" stroke="#211F1C" stroke-width="5" stroke-linecap="round"/>
-              <circle cx="120" cy="88" r="30" fill="#A93226"/>
-            </svg>
-            <div class="logo-words">
-              <strong>看得见的东方</strong>
-              <span>EAST SEEN</span>
-            </div>
-          </div>
-          <div class="card reveal">
-            <h3>Logo 规范</h3>
-            <ul class="clean">
-              <li>色彩：朱砂红 #A93226 + 墨黑 #211F1C + 宣纸白 #F6F1E6。</li>
-              <li>比例：红日直径约为图形宽度三分之一，与下眼睑相切，不悬空。</li>
-              <li>留白：图形四周留白不小于红日直径；与标准字间距不小于红日直径一半。</li>
-              <li>最小尺寸：印刷不小于 12mm，屏幕不小于 40px；更小时只保留“眼 + 日”。</li>
-              <li>禁忌：不加渐变/投影、不改红日颜色、不改变眼睑与红日比例、不叠加多余元素。</li>
-            </ul>
+        <div class="con-body" id="conLog">
+          <span class="out-cmt">// System Initialized. Ready for input.</span><br>
+          <span class="out-cmt">// 试试输入：留白、朱砂、飞白、空山新雨后</span>
+          <div class="con-input">
+            <span>visitor@eastseen:~#</span>
+            <input type="text" id="aiInput" placeholder="输入指令并回车..." autocomplete="off">
           </div>
         </div>
       </div>
     </section>
+  </div>
 
-    <section id="product">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>项目：先数字，后实物，再定制</h2>
-          <p>数字产品负责验证与引流，实物负责利润，定制负责客单价。四步闭环，每一步都用上一步的数据说话。</p>
-        </div>
+  <!-- ================= 页面 2：非遗方舟 ================= -->
+  <div id="page-heritage" class="page">
+    <section>
+      <div class="sec-title stagger-item" style="animation-delay:0.1s;">非遗数字方舟</div>
+      <div class="sec-sub stagger-item" style="animation-delay:0.2s;">用数字科技，让传统非遗在跨文化语境中重生。</div>
 
-        <div class="table-wrap reveal">
-          <table>
-            <thead><tr><th>产品线</th><th>形态 / 示例</th><th>价格带</th><th>毛利</th></tr></thead>
-            <tbody>
-              <tr><td>数字产品</td><td>壁纸包、数字版画、字体与纹样素材包；《空山》壁纸包、《飞白》限量版画</td><td>19—199 元</td><td>86%—90%</td></tr>
-              <tr><td>实物文创</td><td>丝巾、帆布包、香氛卡片、诗笺礼盒、装裱版画；《留白》真丝方巾、《四时》诗笺礼盒</td><td>129—599 元</td><td>55%—65%</td></tr>
-              <tr><td>定制服务</td><td>企业礼赠、婚礼与空间软装、联名设计；酒店大堂软装、企业年会礼盒</td><td>2,000 元起</td><td>45%</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="grid g4" style="margin-top:14px">
-          <article class="card reveal"><div class="num">1</div><h3>AIGC 生成</h3><p>一个主题出 30 组方案，48 小时完成。看合格率与人工修图时长；合格率低于 30% 换模型或主题。</p></article>
-          <article class="card reveal"><div class="num">2</div><h3>数字先测</h3><p>壁纸包、数字版画先上架，最低成本验证付费意愿。两周转化率低于 1% 停掉该主题。</p></article>
-          <article class="card reveal"><div class="num">3</div><h3>做成实物</h3><p>只把数据最好的 3 个方案做成实物，首单 20 件/款，预售制。预售不足 60% 不排产。</p></article>
-          <article class="card reveal"><div class="num">4</div><h3>定制服务</h3><p>把最有付费意愿的 5% 客户转成 B 端与个人定制。连续两月无成交暂停投入。</p></article>
-        </div>
-
-        <div class="grid g2" style="margin-top:14px">
-          <article class="card reveal">
-            <h3>首年课程测算</h3>
-            <p>启动投入约 5 万元；首年 GMV 约 25.2 万元；综合毛利率约 66.5%，毛利 16.7 万元；运营费用约 14.5 万元；净利约 2.2 万元，净利率约 9%。</p>
-            <p style="margin-top:8px">盈亏平衡：月固定费用约 1.21 万元，月 GMV 约 1.82 万元可打平。轻量 MVP 启动成本控制在 2000 元以内。</p>
-          </article>
-          <article class="card reveal">
-            <h3>竞争差异</h3>
-            <p>博物馆文创有 IP 与渠道，我们做“没有 IP 的东方审美”；白牌卖家便宜，我们卖“翻译”与故事；AI 平台出图快，我们做审美筛选、实物落地与场景服务。</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="plan">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>12 周执行计划</h2>
-          <p>计划的价值不在写得多漂亮，而在下周真的有人去做。每周固定投入 8 小时，任务颗粒度控制在 2 小时内。</p>
-        </div>
-        <div class="table-wrap reveal">
-          <table>
-            <thead><tr><th>周次</th><th>关键任务</th><th>交付物</th><th>负责人</th></tr></thead>
-            <tbody>
-              <tr><td>第 1 周</td><td>组队、队长竞聘、确定选题与品牌方向</td><td>竞聘记录、方案初稿</td><td>队长</td></tr>
-              <tr><td>第 2 周</td><td>海外用户访谈 10 人，整理痛点清单</td><td>访谈纪要、需求排序</td><td>内容</td></tr>
-              <tr><td>第 3 周</td><td>名称、口号、Logo、海报定稿</td><td>品牌手册 v1</td><td>设计 + 队长</td></tr>
-              <tr><td>第 4 周</td><td>竞品扫描 20 个，确认差异化</td><td>竞品矩阵图</td><td>运营</td></tr>
-              <tr><td>第 5 周</td><td>建立 AIGC 风格库：书法、诗词、非遗纹样各 10 组</td><td>风格库与提示词手册</td><td>技术 + 内容</td></tr>
-              <tr><td>第 6 周</td><td>数字产品 MVP 上线（壁纸包 + 数字版画）</td><td>2 个 SKU、支付与交付流程</td><td>技术 + 运营</td></tr>
-              <tr><td>第 7 周</td><td>数据复盘与 A/B 选品，确定 3 个主推方向</td><td>数据报告、选品结论</td><td>运营</td></tr>
-              <tr><td>第 8 周</td><td>实物打样：丝巾、帆布包、礼盒各 2 版</td><td>样品与成本表</td><td>设计 + 财务</td></tr>
-              <tr><td>第 9 周</td><td>供应链谈判、定价复核、毛利测算</td><td>供应商合同、价格表</td><td>财务</td></tr>
-              <tr><td>第 10 周</td><td>首单预售：社群 + 小红书 + TikTok 内容 10 条</td><td>预售数据、内容素材</td><td>运营</td></tr>
-              <tr><td>第 11 周</td><td>履约与客服 SOP、包装与开箱体验</td><td>SOP 文档、包装样品</td><td>运营 + 设计</td></tr>
-              <tr><td>第 12 周</td><td>答辩与复盘：数据、财务、下一阶段计划</td><td>答辩 PPT、复盘报告</td><td>全员</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pill-row reveal" style="margin-top:14px">
-          <span class="pill">先上架 10 款测试</span><span class="pill">第一个月拿第一笔订单</span>
-          <span class="pill">零库存 / 预售制</span><span class="pill">跑不通及时止损</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="qr">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <h2>二维码：部署后生成，网址不变</h2>
-          <p>页面部署到 GitHub Pages 或 Cloudflare Pages 后，打开本页点击“生成当前页二维码”。以后只更新内容，二维码仍指向同一网址。</p>
-        </div>
-        <div class="card qr-card reveal">
-          <div>
-            <h3>当前页面地址</h3>
-            <div class="url-box" id="currentUrl">加载中...</div>
-            <div class="actions" style="margin-top:14px">
-              <button class="btn primary" id="makeQrBtn" type="button">生成当前页二维码</button>
-              <button class="btn" id="copyUrlBtn" type="button">复制链接</button>
-            </div>
-            <p style="margin:14px 0 0;color:var(--muted);font-size:13px">
-              提示：本地 <code>http://localhost:8000</code> 生成的二维码手机不能直接访问；请部署后用正式网址生成，或部署后把正式网址发我用 Python 生成 PNG 二维码。
-            </p>
+      <div class="heritage-grid" id="heritageGrid">
+        <!-- 卡片 1 -->
+        <div class="h-card stagger-item" style="animation-delay:0.3s;">
+          <div class="h-card-inner">
+            <div class="h-icon">🖌️</div>
+            <h3>书法：飞白与气韵</h3>
+            <p>提取干笔擦过纸面的“速度感”，将枯笔的肌理转化为现代包装的做旧工艺与丝巾印花。</p>
+            <span class="tag">视觉提取</span>
           </div>
-          <div class="qr-box" id="qrBox">
-            <div class="qr-placeholder">点击左侧按钮<br>生成二维码</div>
+        </div>
+        <!-- 卡片 2 -->
+        <div class="h-card stagger-item" style="animation-delay:0.4s;">
+          <div class="h-card-inner">
+            <div class="h-icon">🏺</div>
+            <h3>青花瓷：苏麻离青</h3>
+            <p>将传统的繁复纹样拆解为几何色块，用低饱和度的钴蓝与现代极简家居结合，跨文化重构。</p>
+            <span class="tag">结构重组</span>
+          </div>
+        </div>
+        <!-- 卡片 3 -->
+        <div class="h-card stagger-item" style="animation-delay:0.5s;">
+          <div class="h-card-inner">
+            <div class="h-icon">🧵</div>
+            <h3>苏绣：丝理与光影</h3>
+            <p>不普及刺绣技法，而是用 AIGC 生成具有丝绸光泽感的渐变粒子，应用于数字壁纸，让老外一眼看懂。</p>
+            <span class="tag">材质转译</span>
           </div>
         </div>
       </div>
     </section>
-  </main>
+  </div>
+
+  <!-- ================= 页面 3：数字画廊 ================= -->
+  <div id="page-gallery" class="page">
+    <section>
+      <div class="gallery-header stagger-item" style="animation-delay:0.1s;">
+        <div>
+          <div class="sec-title" style="text-align:left;">数字画廊与上新</div>
+          <div class="sec-sub" style="text-align:left; margin-bottom:0;">先数字测试，再实物落地。点击按钮模拟 AI 快速上新。</div>
+        </div>
+        <button class="btn-primary" onclick="generateProduct()">
+          <span>＋</span> AI 上新设计
+        </button>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <!-- 初始产品 -->
+        <div class="p-card stagger-item" style="animation-delay:0.2s;">
+          <div class="p-img">🖼️</div>
+          <div class="p-title">《留白》系列壁纸包</div>
+          <div class="p-price">¥ 29.00</div>
+          <div class="p-desc">数字产品 / 转化率测试中</div>
+        </div>
+        <div class="p-card stagger-item" style="animation-delay:0.3s;">
+          <div class="p-img">🎨</div>
+          <div class="p-title">《飞白》限量版画</div>
+          <div class="p-price">¥ 129.00</div>
+          <div class="p-desc">数字产品 / 已售 300 份</div>
+        </div>
+        <div class="p-card stagger-item" style="animation-delay:0.4s;">
+          <div class="p-img">🧣</div>
+          <div class="p-title">《空山》真丝方巾</div>
+          <div class="p-price">¥ 239.00</div>
+          <div class="p-desc">实物文创 / 预售首单 20 件</div>
+        </div>
+        <div class="p-card stagger-item" style="animation-delay:0.5s;">
+          <div class="p-img">🎁</div>
+          <div class="p-title">《四时》诗笺礼盒</div>
+          <div class="p-price">¥ 459.00</div>
+          <div class="p-desc">实物文创 / 企业定制中</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= 页面 4：商业引擎 ================= -->
+  <div id="page-business" class="page">
+    <section>
+      <div class="sec-title stagger-item" style="animation-delay:0.1s;">四步商业闭环</div>
+      <div class="sec-sub stagger-item" style="animation-delay:0.2s;">数据驱动，零库存轻启动，跑不通及时止损。</div>
+
+      <div class="circle-chart stagger-item" style="animation-delay:0.3s;" id="chartArea">
+        <div class="chart-item">
+          <svg viewBox="0 0 160 160">
+            <circle class="chart-bg" cx="80" cy="80" r="70"></circle>
+            <!-- 440是周长，根据百分比计算offset -->
+            <circle class="chart-progress" cx="80" cy="80" r="70" style="--target-offset: 145;"></circle>
+          </svg>
+          <div class="chart-text">67%</div>
+          <div class="chart-label">综合毛利率</div>
+        </div>
+        <div class="chart-item">
+          <svg viewBox="0 0 160 160">
+            <circle class="chart-bg" cx="80" cy="80" r="70"></circle>
+            <circle class="chart-progress" cx="80" cy="80" r="70" style="--target-offset: 220;"></circle>
+          </svg>
+          <div class="chart-text">50%</div>
+          <div class="chart-label">实物利润占比</div>
+        </div>
+        <div class="chart-item">
+          <svg viewBox="0 0 160 160">
+            <circle class="chart-bg" cx="80" cy="80" r="70"></circle>
+            <circle class="chart-progress" cx="80" cy="80" r="70" style="--target-offset: 330;"></circle>
+          </svg>
+          <div class="chart-text">25%</div>
+          <div class="chart-label">三年复购率</div>
+        </div>
+      </div>
+
+      <!-- 团队贡献点计算器 -->
+      <div class="calc-box stagger-item" style="animation-delay:0.4s;">
+        <div style="font-size: 24px; font-weight: bold; margin-bottom: 30px;">团队贡献点结算器</div>
+        <div class="slider-group">
+          <div class="slider-head"><span>交付质量 (40%)</span> <span id="val-q">5 分</span></div>
+          <input type="range" id="slider-q" min="1" max="5" value="5" oninput="calcScore()">
+        </div>
+        <div class="slider-group">
+          <div class="slider-head"><span>交付及时 (25%)</span> <span id="val-t">5 分</span></div>
+          <input type="range" id="slider-t" min="1" max="5" value="5" oninput="calcScore()">
+        </div>
+        <div class="slider-group">
+          <div class="slider-head"><span>协作补位 (20%)</span> <span id="val-c">4 分</span></div>
+          <input type="range" id="slider-c" min="1" max="5" value="4" oninput="calcScore()">
+        </div>
+        <div class="slider-group">
+          <div class="slider-head"><span>对外价值 (15%)</span> <span id="val-v">4 分</span></div>
+          <input type="range" id="slider-v" min="1" max="5" value="4" oninput="calcScore()">
+        </div>
+        <div class="total-score">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">本周总计贡献点</div>
+          <div class="score-val" id="scoreTotal">4.7</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= 页面 5：联系我们 ================= -->
+  <div id="page-connect" class="page">
+    <section style="text-align: center;">
+      <div class="sec-title stagger-item" style="animation-delay:0.1s;">让东方被看见</div>
+      <div class="sec-sub stagger-item" style="animation-delay:0.2s;">手机扫码，随时随地带走这份审美。</div>
+      <div class="qr-container stagger-item" style="animation-delay:0.3s;">
+        <img id="qrImg" src="" alt="QR Code">
+      </div>
+    </section>
+  </div>
 
   <footer>
-    <div class="wrap footer-grid">
-      <div>
-        <strong>看得见的东方 EAST SEEN</strong><br>
-        字外 ZiWai · 不解释文化，只翻译审美。
-      </div>
-      <div style="max-width:680px">
-        说明：第七章价格、销量、毛利与费用均为课程作业测算假设，不代表真实经营数据；正式立项前需重新调研。品牌名与图形对外使用前须完成商标近似检索与注册；涉及非遗与书法作品时，仅使用公版或已授权素材。
-      </div>
-    </div>
+    <p>© 2026 看得见的东方 EastSeen · 字外 ZiWai</p>
+    <p style="opacity: 0.5; margin-top: 8px;">数据均为课程作业测算假设，不代表真实经营数据。</p>
   </footer>
 
   <script>
-    const urlEl = document.getElementById('currentUrl');
-    const qrBox = document.getElementById('qrBox');
-    const makeQrBtn = document.getElementById('makeQrBtn');
-    const copyUrlBtn = document.getElementById('copyUrlBtn');
+    /* ================= 1. 自定义鼠标光标逻辑 ================= */
+    const cDot = document.getElementById('c-dot');
+    const cRing = document.getElementById('c-ring');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
 
-    function currentPageUrl(){
-      return location.href.split('#')[0];
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cDot.style.left = mouseX + 'px';
+      cDot.style.top = mouseY + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      cRing.style.left = ringX + 'px';
+      cRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    // 悬停放大效果
+    document.querySelectorAll('a, button, .h-card, .stat-card, .p-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cRing.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cRing.classList.remove('hover'));
+    });
+
+    /* ================= 2. 路由切换与交错动画 ================= */
+    function switchPage(pageId, event) {
+      // 隐藏所有页面
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      // 移除所有按钮高亮
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+      // 显示目标页面
+      const targetPage = document.getElementById('page-' + pageId);
+      targetPage.classList.add('active');
+
+      // 高亮按钮
+      if(event) event.currentTarget.classList.add('active');
+
+      // 滚动到顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 重置当前页面的交错动画 (Stagger)
+      const staggerItems = targetPage.querySelectorAll('.stagger-item');
+      staggerItems.forEach(item => {
+        item.style.animation = 'none';
+        item.offsetHeight; // 触发重绘
+        item.style.animation = null;
+      });
+
+      // 触发特定页面的功能
+      if(pageId === 'home') triggerCountUp();
+      if(pageId === 'connect') generateQR();
+      if(pageId === 'business') drawCharts();
     }
 
-    function renderUrl(){
-      urlEl.textContent = currentPageUrl();
-    }
+    /* ================= 3. 首页数字滚动 (CountUp) ================= */
+    let counted = false;
+    function triggerCountUp() {
+      if (counted) return;
+      counted = true;
+      document.querySelectorAll('.count').forEach(el => {
+        const target = parseFloat(el.getAttribute('data-target'));
+        const duration = 2000;
+        const steps = 60;
+        const inc = target / steps;
+        let current = 0;
+        let stepCount = 0;
 
-    function makeQr(){
-      const url = currentPageUrl();
-      renderUrl();
-      const img = new Image();
-      img.alt = '当前页面二维码';
-      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(url);
-      img.onerror = function(){
-        qrBox.innerHTML = '<div class="qr-placeholder">二维码服务暂不可用<br>请复制链接后用草料二维码生成</div>';
-      };
-      qrBox.innerHTML = '';
-      qrBox.appendChild(img);
+        const timer = setInterval(() => {
+          current += inc;
+          stepCount++;
+          if (stepCount >= steps) {
+            el.innerText = target; clearInterval(timer);
+          } else {
+            el.innerText = current.toFixed(1);
+          }
+        }, duration / steps);
+      });
     }
+    triggerCountUp(); // 初始化执行
 
-    makeQrBtn.addEventListener('click', makeQr);
-    copyUrlBtn.addEventListener('click', async function(){
-      const url = currentPageUrl();
-      try{
-        await navigator.clipboard.writeText(url);
-        copyUrlBtn.textContent = '已复制';
-        setTimeout(()=>copyUrlBtn.textContent='复制链接', 1600);
-      }catch(e){
-        prompt('复制下面链接：', url);
+    /* ================= 4. 极客 AI 终端打字机效果 ================= */
+    const aiInput = document.getElementById('aiInput');
+    const conLog = document.getElementById('conLog');
+    const aiDict = {
+      "留白": { en: "Breathing space / Negative space", tags: "Minimalism, Quiet, Focus" },
+      "飞白": { en: "Speed of dry brush, textured motion", tags: "Dryness, Velocity, Ink" },
+      "空山新雨后": { en: "Scent of fresh rain in empty mountains", tags: "Wet ink, Zen, Fog" },
+      "朱砂": { en: "Textured red with historical weight", tags: "Matte red, Power, Traditional" }
+    };
+
+    aiInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const val = this.value.trim();
+        if (!val) return;
+
+        // 打印输入
+        const inDiv = document.createElement('div');
+        inDiv.style.marginTop = '12px';
+        inDiv.innerHTML = `<span style="color:var(--accent)">visitor@eastseen:~#</span> ${val}`;
+        conLog.insertBefore(inDiv, this.parentNode);
+        this.value = '';
+
+        // 打印 Loading
+        const loadDiv = document.createElement('div');
+        loadDiv.className = 'out-cmt';
+        loadDiv.innerText = '// Processing AIGC Translation...';
+        conLog.insertBefore(loadDiv, this.parentNode);
+
+        setTimeout(() => {
+          loadDiv.remove();
+          let data = aiDict[val] || { en: `Translating aesthetics of [${val}]`, tags: "Oriental, Modern, Abstract" };
+
+          const resDiv = document.createElement('div');
+          resDiv.style.marginTop = '8px';
+          resDiv.innerHTML = `<span class="out-key">Aesthetic:</span> <span class="out-str" id="type-en"></span><br>
+                              <span class="out-key">Tags:</span> <span class="out-str" id="type-tag"></span>`;
+          conLog.insertBefore(resDiv, this.parentNode);
+          conLog.scrollTop = conLog.scrollHeight;
+
+          // 打字机特效
+          typeWriter(`"${data.en}"`, document.getElementById('type-en'), 30, () => {
+            typeWriter(`[${data.tags}]`, document.getElementById('type-tag'), 30);
+          });
+        }, 600);
       }
     });
 
-    renderUrl();
-
-    const observer = new IntersectionObserver((entries)=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          entry.target.classList.add('show');
-          observer.unobserve(entry.target);
+    function typeWriter(text, element, speed, callback) {
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else if (callback) {
+          callback();
         }
+      }
+      type();
+    }
+
+    /* ================= 5. 非遗 3D 倾斜卡片 ================= */
+    document.querySelectorAll('.h-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // 设置光晕坐标
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+
+        // 计算 3D 旋转
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -10;
+        const rotateY = ((x - centerX) / centerX) * 10;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
       });
-    }, {threshold: .08});
-    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+      });
+    });
+
+    /* ================= 6. 画廊：骨架屏与上新 ================= */
+    let productCount = 4;
+    const pNames = ["《气韵》帆布包", "《青绿》香氛卡", "《流光》丝巾", "《观山》茶席", "《听雨》版画", "《静夜》折扇"];
+    const pIcons = ["👜", "🕯️", "🧣", "🍵", "🖼️", "🪭"];
+    const pTags = ["实物文创 / 预售中", "数字产品 / 新品上架", "实物文创 / 打样中", "定制服务 / 提案中"];
+
+    function generateProduct() {
+      const grid = document.getElementById('productGrid');
+      const btn = document.querySelector('.btn-primary');
+
+      btn.innerHTML = '生成中...';
+      btn.disabled = true;
+
+      // 1. 插入骨架屏
+      const skeleton = document.createElement('div');
+      skeleton.className = 'skeleton';
+      skeleton.innerHTML = `<div class="sk-img"></div><div class="sk-text"></div><div class="sk-text short"></div>`;
+      grid.prepend(skeleton);
+
+      setTimeout(() => {
+        skeleton.remove(); // 移除骨架屏
+
+        const randomName = pNames[Math.floor(Math.random() * pNames.length)];
+        const randomIcon = pIcons[Math.floor(Math.random() * pIcons.length)];
+        const randomTag = pTags[Math.floor(Math.random() * pTags.length)];
+        const randomPrice = (Math.random() * 300 + 19).toFixed(0);
+
+        const card = document.createElement('div');
+        card.className = 'p-card';
+        card.innerHTML = `
+          <div class="p-img">${randomIcon}</div>
+          <div class="p-title">${randomName}</div>
+          <div class="p-price">¥ ${randomPrice}.00</div>
+          <div class="p-desc">${randomTag}</div>
+        `;
+
+        grid.prepend(card);
+        btn.innerHTML = '<span>＋</span> AI 上新设计';
+        btn.disabled = false;
+      }, 1500); // 1.5秒后生成
+    }
+
+    /* ================= 7. 商业页环形图表重绘 ================= */
+    function drawCharts() {
+      document.querySelectorAll('.chart-progress').forEach(circle => {
+        circle.style.animation = 'none';
+        circle.offsetHeight; // 触发重绘
+        circle.style.animation = 'fillChart 2s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+      });
+    }
+
+    /* ================= 8. 贡献点实时计算 ================= */
+    function calcScore() {
+      const q = parseInt(document.getElementById('slider-q').value);
+      const t = parseInt(document.getElementById('slider-t').value);
+      const c = parseInt(document.getElementById('slider-c').value);
+      const v = parseInt(document.getElementById('slider-v').value);
+
+      document.getElementById('val-q').innerText = q + ' 分';
+      document.getElementById('val-t').innerText = t + ' 分';
+      document.getElementById('val-c').innerText = c + ' 分';
+      document.getElementById('val-v').innerText = v + ' 分';
+
+      const total = (q * 0.4) + (t * 0.25) + (c * 0.2) + (v * 0.15);
+      document.getElementById('scoreTotal').innerText = total.toFixed(1);
+    }
+    calcScore(); // 初始化
+
+    /* ================= 9. 二维码生成 ================= */
+    function generateQR() {
+      const url = window.location.href.split('#')[0];
+      document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(url) + '&color=51A28A&bgcolor=ffffff';
+    }
   </script>
 </body>
 </html>
