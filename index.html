@@ -346,6 +346,15 @@ html[data-theme="night"] .logo-mark .lm-water{stroke:var(--paper)}
   .stage-frame{max-height:none;aspect-ratio:4/5}
 }
 
+/* ---------- AI 图容器 ---------- */
+.art-host{position:relative}
+#artMount{position:absolute;inset:0}
+.art-host>svg{position:absolute;inset:0;width:100%;height:100%}
+.art-host .ai-img{position:absolute;left:0;top:0;width:100%;height:112%;object-fit:cover;
+  object-position:center top;opacity:0;transition:opacity 1.1s var(--ease),transform 1.2s var(--ease)}
+.art-host.ai-ready .ai-img{opacity:1}
+.g-card:hover .art-host .ai-img,.line-card:hover .art-host .ai-img{transform:scale(1.045)}
+
 /* ---------- 画廊 ---------- */
 .gal-head{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:44px}
 .filters{display:flex;gap:8px;flex-wrap:wrap}
@@ -770,13 +779,13 @@ html.force .g-card{animation-duration:.001s!important}
       <div class="page-head">
         <div class="eyebrow reveal">视觉工坊 · Studio</div>
         <h1 class="h1 reveal">输入一个东方意象，<br>立刻长出一张能上架的作品。</h1>
-        <p class="desc reveal">由浏览器本地实时渲染，无服务器、无等待、可导出高清 PNG。每一次都是独一无二的一版。</p>
+        <p class="desc reveal">由真实 AI 模型实时生成，默认使用免费引擎，无需任何账号。每一次都是独一无二的一版，可导出高清 PNG。</p>
       </div>
 
       <div class="studio-grid" style="margin-top:36px">
         <div class="panel reveal">
           <div class="field">
-            <label>意象 / KEYWORD <b id="seedHint">可输入任意词</b></label>
+            <label>意象 / KEYWORD <b id="seedHint">AI 会把它画出来</b></label>
             <input class="text-input" id="seedInput" value="空山新雨后" placeholder="例如：留白、朱砂、飞白、青绿山水" maxlength="12" autocomplete="off">
           </div>
           <div class="ideas" id="ideas">
@@ -806,15 +815,26 @@ html.force .g-card{animation-duration:.001s!important}
             </div>
           </div>
 
+          <div class="field">
+            <label>AI 引擎 / ENGINE <b id="engHint">默认免费</b></label>
+            <div class="swatches" id="engines">
+              <button class="sw on" data-eng="auto">智能</button>
+              <button class="sw" data-eng="pollinations">FLUX</button>
+              <button class="sw" data-eng="zhipu">智谱</button>
+              <button class="sw" data-eng="wanx">万相</button>
+              <button class="sw" data-eng="local">本地</button>
+            </div>
+          </div>
+
           <div class="studio-actions">
             <button class="btn btn-solid" id="genBtn"><svg><use href="#i-spark"/></svg> 生成新作</button>
             <button class="btn btn-ghost" id="pushBtn">上新到画廊</button>
           </div>
 
           <div class="studio-note">
-            本地生成引擎 · 不消耗任何额度。<br>
-            如需 AI 命名与英文文案，可在设置里填入 DeepSeek API Key（可选）。
-            <button class="link-arrow" id="keyBtn" style="margin-top:8px">配置 AI 命名 <svg style="width:13px;height:13px"><use href="#i-arrow"/></svg></button>
+            智能模式自动选引擎：填了 Key 用智谱/万相（国内快、无水印、无限量），否则用 FLUX（免费，约 45 秒一张）。页面里的产品图都是预先生成的 AI 作品，加载秒开。<br>
+            AI 命名与英文文案走 DeepSeek（可选）。
+            <button class="link-arrow" id="keyBtn" style="margin-top:8px">配置 API 密钥 <svg style="width:13px;height:13px"><use href="#i-arrow"/></svg></button>
           </div>
         </div>
 
@@ -1124,21 +1144,21 @@ const SITE = {
   email: "hello@eastseen.studio",
   // 作品：type 为 digital / pod / bespoke
   items: [
-    { name:"空山", en:"After the rain, an empty mountain", type:"pod", price:239, method:"肌理提取",
+    { img:"assets/ai/p1.jpg", name:"空山", en:"After the rain, an empty mountain", type:"pod", price:239, method:"肌理提取",
       desc:"雨后山体的湿度被压缩成四层灰阶，留白处不是空的，是空气。", art:{seed:"空山新雨后", pal:"celadon", comp:"mountain"} },
-    { name:"朱砂", en:"Cinnabar, a weight of red", type:"pod", price:299, method:"色彩解码",
+    { img:"assets/ai/p2.jpg", name:"朱砂", en:"Cinnabar, a weight of red", type:"pod", price:299, method:"色彩解码",
       desc:"把印章的朱红提到整幅画面的主角位，红得克制，像一枚压在信末的心意。", art:{seed:"朱砂", pal:"cinnabar", comp:"moon"} },
-    { name:"飞白", en:"The speed of a dry brush", type:"digital", price:89, method:"肌理提取",
+    { img:"assets/ai/p3.jpg", name:"飞白", en:"The speed of a dry brush", type:"digital", price:89, method:"肌理提取",
       desc:"枯笔的速度感被拆成断线，边缘保留纸纤维的毛糙，这是书法里最现代的部分。", art:{seed:"飞白", pal:"ink", comp:"mountain"} },
-    { name:"青绿", en:"A thousand li of rivers and mountains", type:"pod", price:459, method:"结构重组",
+    { img:"assets/ai/p4.jpg", name:"青绿", en:"A thousand li of rivers and mountains", type:"pod", price:459, method:"结构重组",
       desc:"石青与石绿被压成两片色域，中间留一道水。传统山水在这里变成了极简海报。", art:{seed:"青绿山水", pal:"celadon", comp:"water"} },
-    { name:"月下松风", en:"Wind in the pines, under the moon", type:"digital", price:129, method:"材质转译",
+    { img:"assets/ai/p5.jpg", name:"月下松风", en:"Wind in the pines, under the moon", type:"digital", price:129, method:"材质转译",
       desc:"月光只做一件事：把山从黑里捞出来一点点。这版留给深夜看屏幕的人。", art:{seed:"月下松风", pal:"indigo", comp:"moon"} },
-    { name:"鎏金", en:"Gilded line, quiet luxury", type:"bespoke", price:899, method:"逻辑借用",
+    { img:"assets/ai/p6.jpg", name:"鎏金", en:"Gilded line, quiet luxury", type:"bespoke", price:899, method:"逻辑借用",
       desc:"金的用法不是铺满，是只描一条边。克制，是东方对贵气的理解。", art:{seed:"鎏金", pal:"gold", comp:"forest"} },
-    { name:"江南烟雨", en:"Drizzle over Jiangnan", type:"digital", price:99, method:"材质转译",
+    { img:"assets/ai/p7.jpg", name:"江南烟雨", en:"Drizzle over Jiangnan", type:"digital", price:99, method:"材质转译",
       desc:"把水汽做成一层次透视，远山只剩轮廓。这是江南最容易被误读、也最容易被爱上的样子。", art:{seed:"江南烟雨", pal:"celadon", comp:"water"} },
-    { name:"一线水", en:"One stroke of water", type:"pod", price:299, method:"结构重组",
+    { img:"assets/ai/p8.jpg", name:"一线水", en:"One stroke of water", type:"pod", price:299, method:"结构重组",
       desc:"整幅画面只有一道水平线，剩下全是留白。越少，越难做。", art:{seed:"一线水", pal:"indigo", comp:"water"} }
   ]
 };
@@ -1313,6 +1333,220 @@ function nameFor(seed,rand){
 
 function typeOfComp(comp){
   return comp==="forest"?"pod":comp==="moon"?"digital":comp==="water"?"pod":"digital";
+}
+
+/* ---------- ③' AI 生图引擎（真实 AI 出图，多引擎自动切换） ---------- */
+/* 引擎优先级（智能模式）：智谱 CogView-3-Flash（填了 Key）→ FLUX（免密钥）→ 本地兜底 */
+const AI_ENGINES={
+  auto        :{label:"智能"},
+  pollinations:{label:"FLUX · 免费免密钥"},
+  zhipu       :{label:"智谱 CogView · 免费模型"},
+  wanx        :{label:"通义万相"},
+  local       :{label:"本地水墨引擎"}
+};
+let AI_ENGINE=store.get("eastseen_engine","auto");
+const aiCache=new Map();
+
+function artPrompt(cfg){
+  const PAL_EN={
+    celadon:"muted celadon green and pale jade tones on ivory paper",
+    cinnabar:"cinnabar vermilion red accent on ivory white paper",
+    ink:"pure black ink on white rice paper, monochrome",
+    gold:"gilded gold leaf accents on warm beige silk",
+    indigo:"deep indigo blue with soft grey mist"
+  };
+  const COMP_EN={
+    mountain:"layered misty mountain ridges fading into fog, distant peaks",
+    moon:"a huge pale moon rising over silhouetted ink mountains",
+    water:"one calm horizontal water line with vast negative space",
+    forest:"a dense misty pine forest painted in ink strokes"
+  };
+  return "Minimalist Chinese ink wash painting (shui-mo style), "+
+    (COMP_EN[cfg.comp]||COMP_EN.mountain)+", "+
+    (PAL_EN[cfg.pal]||PAL_EN.celadon)+
+    ", vast negative space, misty oriental atmosphere, xuan rice paper texture, "+
+    "elegant premium gallery art print, museum quality, high detail, no text, no watermark, no border";
+}
+function artSeed(cfg){return hashStr(cfg.seed+"|"+cfg.pal+"|"+cfg.comp+"|"+(cfg.v||0))%1000000;}
+
+function pollinationsUrl(cfg){
+  return "https://image.pollinations.ai/prompt/"+encodeURIComponent(artPrompt(cfg))+
+    "?width=896&height=1120&seed="+artSeed(cfg)+"&nologo=true&model=flux";
+}
+
+async function zhipuGen(cfg){
+  const key=store.get("eastseen_zhipu_key","");
+  const r=await fetch("https://open.bigmodel.cn/api/paas/v4/images/generations",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+    body:JSON.stringify({model:"cogview-3-flash",prompt:artPrompt(cfg),size:"1024x1024"})
+  });
+  if(!r.ok) throw new Error("zhipu http "+r.status);
+  const d=await r.json();
+  const url=d&&d.data&&d.data[0]&&d.data[0].url;
+  if(!url) throw new Error("zhipu no url");
+  return url;
+}
+
+async function wanxGen(cfg){
+  const key=store.get("eastseen_wanx_key","");
+  const cr=await fetch("https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+key,"X-DashScope-Async":"enable"},
+    body:JSON.stringify({model:"wanx2.1-t2i-turbo",input:{prompt:artPrompt(cfg)},parameters:{size:"768*1024",n:1}})
+  });
+  if(!cr.ok) throw new Error("wanx http "+cr.status);
+  const cd=await cr.json();
+  const tid=cd.output&&cd.output.task_id;
+  if(!tid) throw new Error("wanx no task id");
+  for(let i=0;i<40;i++){
+    await new Promise(r=>setTimeout(r,2500));
+    const tr=await fetch("https://dashscope.aliyuncs.com/api/v1/tasks/"+tid,{headers:{Authorization:"Bearer "+key}});
+    const td=await tr.json();
+    const st=td.output&&td.output.task_status;
+    if(st==="SUCCEEDED"){
+      const u=td.output.results&&td.output.results[0]&&td.output.results[0].url;
+      if(!u) throw new Error("wanx no result");
+      return u;
+    }
+    if(st==="FAILED"||st==="UNKNOWN") throw new Error("wanx task failed");
+  }
+  throw new Error("wanx timeout");
+}
+
+function pickEngine(){
+  if(AI_ENGINE!=="auto"&&AI_ENGINE!=="") return AI_ENGINE;
+  if(store.get("eastseen_zhipu_key","")) return "zhipu";
+  if(store.get("eastseen_wanx_key","")) return "wanx";
+  return "pollinations";
+}
+
+/* 检测 Pollinations 免费限速占位图（整幅黄色提示卡） */
+function looksLikePlaceholder(img){
+  try{
+    const c=document.createElement("canvas");
+    c.width=40;c.height=50;
+    const cx=c.getContext("2d");
+    cx.drawImage(img,0,0,40,50);
+    const d=cx.getImageData(0,0,40,50).data;
+    let hit=0,tot=0;
+    for(let i=0;i<d.length;i+=4){
+      tot++;
+      if(d[i]>210&&d[i+1]>140&&d[i+2]<110) hit++;
+    }
+    return tot>0&&hit/tot>0.5;
+  }catch(e){return false;}
+}
+
+/* 预生成的 AI 静态产品图（真 AI 出图，随站点发布，秒开且不受限速影响） */
+const STATIC_ART={
+  "空山新雨后|celadon|mountain":"assets/ai/p1.jpg",
+  "朱砂|cinnabar|moon":"assets/ai/p2.jpg",
+  "飞白|ink|mountain":"assets/ai/p3.jpg",
+  "青绿山水|celadon|water":"assets/ai/p4.jpg",
+  "月下松风|indigo|moon":"assets/ai/p5.jpg",
+  "鎏金|gold|forest":"assets/ai/p6.jpg",
+  "江南烟雨|celadon|water":"assets/ai/p7.jpg",
+  "一线水|indigo|water":"assets/ai/p8.jpg"
+};
+function staticArtOf(cfg){return STATIC_ART[(cfg.seed||"")+"|"+(cfg.pal||"")+"|"+(cfg.comp||"")]||null;}
+
+function withTimeout(p,ms){
+  return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),ms))]);
+}
+
+/* 生成一张 AI 图，返回 {url, provider}；失败或本地引擎抛错 */
+async function aiGen(cfg){
+  const eng=pickEngine();
+  if(eng==="local") throw new Error("local");
+  const cacheKey=eng+"|"+cfg.seed+"|"+cfg.pal+"|"+cfg.comp+"|"+(cfg.v||0);
+  if(aiCache.has(cacheKey)) return aiCache.get(cacheKey);
+  let url;
+  if(eng==="zhipu") url=await zhipuGen(cfg);
+  else if(eng==="wanx") url=await wanxGen(cfg);
+  else url=pollinationsUrl(cfg);
+  const out={url,provider:eng};
+  aiCache.set(cacheKey,out);
+  return out;
+}
+
+/* 把 AI 图挂载到容器：本地 SVG 先垫底（秒开），AI 图加载完淡入盖上去 */
+function mountArt(el,cfg,opts={}){
+  el.classList.add("art-host");
+  el.innerHTML=makeArt(cfg);
+  if(pickEngine()==="local") return null;
+  const img=new Image();
+  img.className="ai-img";
+  img.alt=cfg.seed||"";
+  img.decoding="async";
+  if(opts.lazy) img.loading="lazy";
+  img.addEventListener("load",()=>{
+    if(!opts.url&&/pollinations/.test(img.src)&&looksLikePlaceholder(img)){
+      img.remove();el.classList.remove("ai-ready");
+      if(opts.onerror)opts.onerror();
+      return;
+    }
+    el.classList.add("ai-ready");
+    if(opts.onload)opts.onload();
+  });
+  img.addEventListener("error",()=>{img.remove();el.classList.remove("ai-ready");if(opts.onerror)opts.onerror();});
+  (async()=>{
+    try{
+      let url=opts.url||staticArtOf(cfg);
+      if(!url){const g=await aiGen(cfg);url=g.url;}
+      if(/^https?:/.test(url)) img.crossOrigin="anonymous";
+      img.src=url;
+      el.appendChild(img);
+    }catch(e){if(opts.onerror)opts.onerror();}
+  })();
+  return img;
+}
+
+/* AI 图 → PNG 静图（裁掉底部水印区 + 统一 4:5 + 高清放大） */
+async function aiPng(url,outW=1440,outH=1800){
+  const img=await new Promise((res,rej)=>{
+    const im=new Image();
+    im.crossOrigin="anonymous";
+    im.onload=()=>res(im);
+    im.onerror=()=>rej(new Error("image load failed"));
+    im.src=(url.includes("?")?url+"&t=":url+"?t=")+Date.now();
+  });
+  const iw=img.naturalWidth, ih=img.naturalHeight;
+  const is45=Math.abs(iw/ih-0.8)<0.03;           // 预生成图已是干净的 4:5
+  const sh=is45?ih:Math.floor(ih*0.91);          // 免费引擎在线图裁掉底部 9%（去水印）
+  const sw=iw;
+  const tw=Math.min(sw,Math.floor(sh*0.8));      // 居中裁成 4:5
+  const c=document.createElement("canvas");
+  c.width=outW;c.height=outH;
+  const cx=c.getContext("2d");
+  cx.fillStyle="#FFFFFF";cx.fillRect(0,0,outW,outH);
+  cx.drawImage(img,(sw-tw)/2,0,tw,sh,0,0,outW,outH);
+  return new Promise((res,rej)=>{
+    try{
+      c.toBlob(b=>b?res(b):rej(new Error("toBlob failed")),"image/png");
+    }catch(err){rej(err);}
+  });
+}
+
+/* 统一下载入口：本地 AI 静态图直接取原图（已是干净 4:5）；
+   在线 AI 图走画布裁水印导出 PNG。返回实际保存的格式。 */
+async function downloadArt(url,name){
+  if(!url) throw new Error("no url");
+  if(!/^https?:/.test(url)){
+    try{
+      const r=await fetch(url);
+      if(!r.ok) throw new Error("http "+r.status);
+      downloadBlob(await r.blob(),name+".jpg");
+      return "jpg";
+    }catch(e){
+      // file:// 本地预览时 fetch 不可用，直接新标签打开让用户右键另存（不离开当前页面）
+      window.open(url,"_blank");
+      return "jpg";
+    }
+  }
+  const blob=await aiPng(url);
+  downloadBlob(blob,name+".png");
+  return "png";
 }
 
 /* ---------- ④ 多页面路由 ---------- */
@@ -1573,16 +1807,13 @@ function renderGallery(){
     card.className="g-card";
     card.style.animationDelay=Math.min(idx*45,420)+"ms";
     card.innerHTML=`
-      <div class="g-thumb">${makeArt(it.art)}
-        <button class="g-fav ${isFav(it.id)?"on":""}" data-fav="${it.id}" aria-label="收藏">
-          <svg><use href="${isFav(it.id)?"#i-heart-f":"#i-heart"}"/></svg>
-        </button>
-      </div>
+      <div class="g-thumb"></div>
       <div class="g-info">
         <div class="row"><h4>《${it.name}》</h4><span class="type">${TYPE_CN[it.type]}</span></div>
         <div class="en">${it.en}</div>
-        <div class="row" style="margin-top:4px"><span class="p">¥ ${it.price}</span><span class="small" style="font-size:11px">${it.method}</span></div>
+        <div class="row" style="margin-top:4px"><span class="p">¥ ${it.price}</span><span class="small" style="font-size:11px">${it.method||"AI 视觉生成"}</span></div>
       </div>`;
+    mountArt(card.querySelector(".g-thumb"),it.art,{lazy:true,url:it.img||it.url});
     card.addEventListener("click",e=>{
       if(e.target.closest("[data-fav]")) return;
       openLightbox(it);
@@ -1619,7 +1850,10 @@ $$("#filters .filter").forEach(btn=>{
 let lbItem=null;
 function openLightbox(it){
   lbItem=it;
-  $("#lbArt").innerHTML=makeArt(it.art);
+  const lbMount=$("#lbArt");
+  lbMount.classList.remove("art-host","ai-ready");
+  lbMount.innerHTML=makeArt(it.art);
+  mountArt(lbMount,it.art,{url:it.img||it.url||staticArtOf(it.art)});
   $("#lbName").textContent="《"+it.name+"》";
   $("#lbEn").textContent=it.en;
   $("#lbPrice").textContent="¥ "+it.price;
@@ -1644,64 +1878,129 @@ $("#lightbox").addEventListener("click",e=>{if(e.target.id==="lightbox"){
 $("#lbFav").addEventListener("click",()=>{if(lbItem)toggleFav(lbItem.id);});
 $("#lbDl").addEventListener("click",async()=>{
   if(!lbItem) return;
-  toast("正在导出高清 PNG…","i-download");
+  toast("正在导出…","i-download");
+  let url=lbItem.img||lbItem.url||staticArtOf(lbItem.art);
+  if(!url){try{url=(await aiGen(lbItem.art)).url;}catch(e){}}
   try{
-    await svgToPng(makeArt(lbItem.art),`看得见的东方_${lbItem.name}.png`);
-    toast("已保存 PNG（1600×2000）","i-download");
+    if(url){
+      const ext=await downloadArt(url,`看得见的东方_${lbItem.name}`);
+      toast(ext==="png"?"已保存 PNG（已去水印）":"已保存图片","i-download");
+    }else{
+      await svgToPng(makeArt(lbItem.art),`看得见的东方_${lbItem.name}.png`);
+      toast("已保存本地渲染 PNG","i-download");
+    }
   }catch(e){
-    downloadSVG(makeArt(lbItem.art),lbItem.name);
-    toast("PNG 导出失败，已保存 SVG 备用");
+    try{
+      await svgToPng(makeArt(lbItem.art),`看得见的东方_${lbItem.name}.png`);
+      toast("AI 原图获取失败，已保存本地渲染 PNG");
+    }catch(e2){toast("导出失败，请重试");}
   }
 });
 
 /* ---------- 工坊 ---------- */
-let current={seed:"空山新雨后",pal:"celadon",comp:"mountain",item:null};
+let current={seed:"空山新雨后",pal:"celadon",comp:"mountain",v:0,cfg:null,item:null,url:null};
 
-function buildCurrent(){
-  const seed=$("#seedInput").value.trim()||"东方";
-  current.seed=seed;
-  const svg=makeArt({seed,pal:current.pal,comp:current.comp});
-  $("#artMount").innerHTML=svg;
-  const rand=mulberry32(hashStr(seed+current.pal+current.comp));
-  const nm=nameFor(seed,rand);
-  const type=typeOfComp(current.comp);
+function buildMeta(cfg){
+  const rand=mulberry32(hashStr(cfg.seed+cfg.pal+cfg.comp));
+  const nm=nameFor(cfg.seed,rand);
+  const type=typeOfComp(cfg.comp);
   const price=type==="digital"?19+Math.floor(rand()*8)*10:type==="pod"?129+Math.floor(rand()*18)*10:459+Math.floor(rand()*9)*50;
   $("#artName").textContent="《"+nm.cn+"》";
   $("#artEn").textContent=nm.en;
   $("#artPrice").textContent="¥ "+price;
-  $("#artTag").textContent="ORIGINAL · "+PAL_CN[current.pal]+" · "+COMP_CN[current.comp];
-  current.item={name:nm.cn,en:nm.en,type,price,method:"肌理提取",desc:`以「${seed}」为意象，${PAL_CN[current.pal]}为调，${COMP_CN[current.comp]}为构图的一次转译。`,art:{seed,pal:current.pal,comp:current.comp}};
-  aiName(seed);
-  return current.item;
+  current.item={name:nm.cn,en:nm.en,type,price,method:"AI 视觉生成",
+    desc:`以「${cfg.seed}」为意象的一次 AI 视觉转译。`,
+    art:{seed:cfg.seed,pal:cfg.pal,comp:cfg.comp,v:cfg.v||0}};
 }
 
-function generate(){
+function syncEngineTag(provider){
+  const m={pollinations:"AI · FLUX",zhipu:"AI · 智谱 CogView",wanx:"AI · 通义万相",local:"本地引擎"};
+  $("#artTag").textContent="ORIGINAL · "+(m[provider]||"AI 引擎");
+}
+
+async function generate(bump=true){
   const loading=$("#stageLoading");
+  if(bump) current.v++;
+  const seed=$("#seedInput").value.trim()||"东方";
+  const cfg={seed,pal:current.pal,comp:current.comp,v:current.v};
+  current.cfg=cfg;
+  const mount=$("#artMount");
+  mount.classList.remove("art-host","ai-ready");
+  mount.innerHTML=makeArt(cfg);   // 本地渲染先垫底，秒开不空屏
+  buildMeta(cfg);
+  current.url=null;
+  aiName(seed);
+  // 预生成 AI 静态图：直接秒开，不消耗在线额度
+  const staticUrl=current.v===0?staticArtOf(cfg):null;
+  if(staticUrl){
+    const img=new Image();
+    img.className="ai-img";img.alt=seed;
+    img.onload=()=>{
+      mount.classList.add("art-host","ai-ready");
+      mount.appendChild(img);
+      current.url=staticUrl;
+      syncEngineTag("pollinations");
+      loading.classList.remove("on");
+    };
+    img.onerror=()=>{loading.classList.remove("on");};
+    img.src=staticUrl;
+    return;
+  }
+  const eng=pickEngine();
+  if(eng==="local"){syncEngineTag("local");return;}
   loading.classList.add("on");
-  setTimeout(()=>{
-    buildCurrent();
+  try{
+    const {url,provider}=await withTimeout(aiGen(cfg),90000);
+    const img=new Image();
+    img.className="ai-img";img.alt=seed;img.decoding="async";img.crossOrigin="anonymous";
+    img.onload=()=>{
+      if(/pollinations/.test(url)&&looksLikePlaceholder(img)){
+        loading.classList.remove("on");
+        toast("免费引擎限速中（约45秒/张），请稍后再生成，或配置智谱 Key");
+        return;
+      }
+      mount.classList.add("art-host","ai-ready");
+      mount.appendChild(img);
+      current.url=url;
+      syncEngineTag(provider);
+      loading.classList.remove("on");
+    };
+    img.onerror=()=>{loading.classList.remove("on");toast("AI 图片加载失败，已显示本地渲染");};
+    img.src=url;
+  }catch(e){
     loading.classList.remove("on");
-  },reduce?60:520);
+    toast("AI 生成不可用，已用本地渲染");
+  }
 }
 
-$("#genBtn").addEventListener("click",generate);
-$("#seedInput").addEventListener("keydown",e=>{if(e.key==="Enter")generate();});
+$("#genBtn").addEventListener("click",()=>generate(true));
+$("#seedInput").addEventListener("keydown",e=>{if(e.key==="Enter")generate(true);});
 $$("#ideas .idea").forEach(b=>b.addEventListener("click",()=>{
-  $("#seedInput").value=b.textContent;generate();
+  $("#seedInput").value=b.textContent;current.v=0;generate(false);
 }));
 $$("#palettes .sw").forEach(b=>b.addEventListener("click",()=>{
   $$("#palettes .sw").forEach(x=>x.classList.remove("on"));
-  b.classList.add("on");current.pal=b.dataset.pal;generate();
+  b.classList.add("on");current.pal=b.dataset.pal;generate(false);
 }));
 $$("#comps .sw").forEach(b=>b.addEventListener("click",()=>{
   $$("#comps .sw").forEach(x=>x.classList.remove("on"));
-  b.classList.add("on");current.comp=b.dataset.comp;generate();
+  b.classList.add("on");current.comp=b.dataset.comp;generate(false);
+}));
+
+/* AI 引擎切换 */
+$$("#engines .sw").forEach(b=>b.addEventListener("click",()=>{
+  $$("#engines .sw").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");
+  AI_ENGINE=b.dataset.eng;
+  store.set("eastseen_engine",AI_ENGINE);
+  toast("AI 引擎："+AI_ENGINES[AI_ENGINE].label);
 }));
 
 $("#pushBtn").addEventListener("click",()=>{
-  const it=current.item||buildCurrent();
+  const it=current.item;
+  if(!it) return;
   const id="i"+hashStr(it.name+it.en+Date.now());
-  extras.unshift({...it,id});
+  extras.unshift({...it,id,url:current.url||undefined});
   extras=extras.slice(0,40);
   store.set(EXTRA_KEY,extras);
   renderGallery();
@@ -1709,18 +2008,24 @@ $("#pushBtn").addEventListener("click",()=>{
   navigate("gallery");
 });
 $("#dlBtn").addEventListener("click",async()=>{
-  const it=current.item||buildCurrent();
-  toast("正在导出高清 PNG…","i-download");
+  const it=current.item||{name:"作品"};
+  toast("正在导出…","i-download");
   try{
-    await svgToPng(makeArt(it.art),`看得见的东方_${it.name}.png`);
-    toast("已保存 PNG（1600×2000）","i-download");
+    if(current.url){
+      const ext=await downloadArt(current.url,`看得见的东方_${it.name}`);
+      toast(ext==="png"?"已保存 PNG（已去水印）":"已保存图片","i-download");
+    }else{
+      await svgToPng(makeArt(current.cfg||{seed:"东",pal:"celadon",comp:"mountain"}),`看得见的东方_${it.name}.png`);
+      toast("已保存 PNG（本地渲染）","i-download");
+    }
   }catch(e){
-    downloadSVG(makeArt(it.art),it.name);
-    toast("PNG 导出失败，已保存 SVG 备用");
+    if(current.url&&/^https?:/.test(current.url)){window.open(current.url,"_blank");toast("已打开 AI 原图，可长按/右键保存");}
+    else toast("导出失败，请重试");
   }
 });
 $("#favBtn").addEventListener("click",()=>{
-  const it=current.item||buildCurrent();
+  const it=current.item;
+  if(!it) return;
   toggleFav(it.id||(it.id="i"+hashStr(it.name+it.en)));
 });
 
@@ -1762,15 +2067,15 @@ function svgToPng(svgStr,name,outW=1600,outH=2000){
   });
 }
 
-/* DeepSeek 可选命名 */
+/* API 密钥配置（全部只存本机浏览器 localStorage） */
 $("#keyBtn").addEventListener("click",async()=>{
-  const cur=store.get("eastseen_ds_key","");
-  const key=window.prompt("填入 DeepSeek API Key（只保存在你本机浏览器，不会上传到任何服务器）。留空则清除。",cur||"");
-  if(key===null) return;
-  if(!key.trim()){store.set("eastseen_ds_key","");toast("已清除 API Key");return;}
-  store.set("eastseen_ds_key",key.trim());
-  toast("已保存，生成时会尝试 AI 命名");
-  await aiName(current.seed);
+  const zk=window.prompt("① 智谱 CogView（免费出图模型，open.bigmodel.cn 免费申请）API Key。留空则清除：",store.get("eastseen_zhipu_key","")||"");
+  if(zk!==null) store.set("eastseen_zhipu_key",zk.trim());
+  const wk=window.prompt("② 通义万相（bailian.aliyun.com 开通，新用户有免费额度）API Key。留空则清除：",store.get("eastseen_wanx_key","")||"");
+  if(wk!==null) store.set("eastseen_wanx_key",wk.trim());
+  const dk=window.prompt("③ DeepSeek API Key（可选，用于 AI 命名）。留空则清除：",store.get("eastseen_ds_key","")||"");
+  if(dk!==null) store.set("eastseen_ds_key",dk.trim());
+  toast("密钥已保存（只存在本机浏览器）");
 });
 
 async function aiName(seed){
@@ -2139,16 +2444,17 @@ if(CURRENT_URL.endsWith("/")) CURRENT_URL+="index.html";
 (function init(){
   // 三条产品线的配图（同一套生成引擎，视觉语言统一）
   const visuals={
-    digital:{seed:"飞白",pal:"ink",comp:"mountain"},
-    pod:{seed:"青绿山水",pal:"celadon",comp:"water"},
-    bespoke:{seed:"鎏金",pal:"gold",comp:"forest"}
+    digital:{seed:"飞白",pal:"ink",comp:"mountain",img:"assets/ai/l1.jpg"},
+    pod:{seed:"青绿山水",pal:"celadon",comp:"water",img:"assets/ai/l2.jpg"},
+    bespoke:{seed:"鎏金",pal:"gold",comp:"forest",img:"assets/ai/l3.jpg"}
   };
   $$("[data-art]").forEach(el=>{
     const cfg=visuals[el.dataset.art];
-    if(cfg) el.innerHTML=makeArt(cfg);
+    if(cfg) mountArt(el,cfg,{lazy:true,url:cfg.img});
   });
 
-  buildCurrent();
+  $$("#engines .sw").forEach(b=>b.classList.toggle("on",b.dataset.eng===AI_ENGINE));
+  generate(false);
   renderGallery();
   initCalc();
 
